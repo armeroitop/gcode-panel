@@ -1,0 +1,3 @@
+/server/vendor/
+/var/www/gcode-panel/files/*
+!/var/www/gcode-panel/files/.gitkeep

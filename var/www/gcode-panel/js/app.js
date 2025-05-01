@@ -1,0 +1,1 @@
+Contiene el código JavaScript para la conexión WebSocket y el envío de comandos al servidor.
