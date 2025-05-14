@@ -1,1 +1,0 @@
-Script PHP para manejar la subida de archivos G-code.
