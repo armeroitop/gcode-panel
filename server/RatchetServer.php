@@ -23,8 +23,7 @@ class RatchetServer implements MessageComponentInterface {
         if (strpos($msg, "procesar") !== false) {
             $nombreArchivo = substr($msg, strpos($msg, " ") + 1); // Extraemos el nombre del archivo
             $resultado = $this->procesarGcode($nombreArchivo);
-            $from->send("Resultado: $resultado");
-            $from->send("COmando ejecutado: Procesando $resultado");
+            $from->send("Resultado onMesseage: $resultado");
         }
     }
 
