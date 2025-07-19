@@ -21,7 +21,8 @@ cd server
 sudo php server.php
 ```
 
-Esto iniciará el servidor WebSocket usando Ratchet. Es posible que se requieran permisos de superusuario dependiendo de tu configuración de red.
+Esto iniciará el servidor WebSocket usando Ratchet. De momento es necesario ejecutar el comando
+con SUDO ya que la libreria wiringpi lo requiere.
 
 ---
 

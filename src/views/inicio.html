@@ -1,0 +1,25 @@
+<h1>Subir y Procesar G-code</h1>
+
+<div class="row">
+    <div class="col-6">
+        <h2>Subir G-code</h2>
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label" for="gcodeFile">Selecciona un archivo G-code para subirlo al servidor.</label>
+                <input class="form-control " type="file" id="gcodeFile" name="gcodefile" accept=".gcode,.txt" required>
+                <button class="btn btn-info mt-3" type="submit">Subir</button>
+
+            </div>
+        </form>
+    </div>
+    <div class="col-6">
+        <h2>Procesar G-code</h2>
+        <p>Haz clic en el botón para procesar el G-code subido.</p>
+        <div id="resultado"></div>
+
+        <button class="btn btn-info" onclick="procesarGcode()">Procesar G-code</button>
+    </div>
+</div>
+
+{{#subirArchivo}}
+

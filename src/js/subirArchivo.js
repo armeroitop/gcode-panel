@@ -1,10 +1,11 @@
+console.log('se ha cargado el archivo subirArchivo.js');
 
 document.getElementById('uploadForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const formData = new FormData(this);
 
-    fetch('../upload.php', {
+    fetch('./../upload.php', {
         method: 'POST',
         body: formData
     })
