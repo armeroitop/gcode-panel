@@ -22,7 +22,7 @@ export async function render(template, data = {}) {
         }
     }
 
-     // 1b. Cargar scripts {{# mijavascript}}
+    // 1b. Cargar scripts {{# script}}
     const scriptRegex = /{{#\s*(\w+)\s*}}/g;
     let scriptMatch;
     while ((scriptMatch = scriptRegex.exec(template)) !== null) {
@@ -31,10 +31,20 @@ export async function render(template, data = {}) {
 
         // Cargar el script dinámicamente
         if (!document.querySelector(`script[src="${rutaScript}"]`)) {
-            const script = document.createElement('script');
-            script.src = rutaScript;
-            script.type = 'module'; // o 'text/javascript' según tu caso
-            document.body.appendChild(script);
+            try {
+                // Verifica si el archivo existe con fetch
+                const response = await fetch(rutaScript, { method: 'HEAD' });
+                if (response.ok) {
+                    const script = document.createElement('script');
+                    script.src = rutaScript;
+                    script.type = 'module';
+                    document.body.appendChild(script);
+                } else {
+                    console.warn(`El script no existe: ${rutaScript}`);
+                }
+            } catch (err) {
+                console.warn(`Error al verificar el script: ${rutaScript}`);
+            }
         }
 
         // Elimina la expresión del template

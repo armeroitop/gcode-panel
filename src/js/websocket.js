@@ -14,3 +14,11 @@ function procesarGcode() {
     var nombreArchivo = document.getElementById("gcodeFile").files[0].name; // Nombre del archivo subido
     conn.send("procesar " + nombreArchivo); // Enviar el comando al servidor WebSocket
 }
+
+function moverDerecha() {
+    conn.send("mover_derecha"); // Enviar el comando para mover a la derecha
+}
+
+function mover(x,y){
+    conn.send(`mover ${x} ${y}`); // Enviar el comando para mover a una posición específica
+}

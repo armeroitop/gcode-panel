@@ -1,4 +1,4 @@
-<h1>Subir y Procesar G-code</h1>
+<h1>Subir y Procesar G-code {{titulo}}</h1>
 
 <div class="row">
     <div class="col-6">
@@ -17,9 +17,10 @@
         <p>Haz clic en el botón para procesar el G-code subido.</p>
         <div id="resultado"></div>
 
-        <button class="btn btn-info" onclick="procesarGcode()">Procesar G-code</button>
+        {{> crucetaMovimiento}}
+
+
     </div>
 </div>
 
-{{#subirArchivo}}
-
+{{# subirArchivo}}
