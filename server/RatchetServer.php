@@ -8,6 +8,7 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 class RatchetServer implements MessageComponentInterface {
+
     public function onOpen(ConnectionInterface $conn) {
         echo "Nueva conexión: ({$conn->resourceId})\n";
     }
@@ -22,7 +23,8 @@ class RatchetServer implements MessageComponentInterface {
         // Si recibimos un comando para procesar el G-code
         if (strpos($msg, "procesar") !== false) {
             $nombreArchivo = substr($msg, strpos($msg, " ") + 1); // Extraemos el nombre del archivo
-            $resultado = $this->procesarGcode($nombreArchivo);
+            echo "Nombre del archivo: $nombreArchivo\n";
+            $resultado = $this->procesarArchivoGcode($nombreArchivo);
             $from->send("Resultado onMesseage: $resultado");
         }
 
@@ -46,11 +48,12 @@ class RatchetServer implements MessageComponentInterface {
     }
 
     // Función para procesar el G-code
-    private function procesarGcode(string $nombreArchivo): ?string {
-        $rutaArchivo = __DIR__ . '/../uploads/' . $nombreArchivo;
+    private function procesarArchivoGcode(string $nombreArchivo): ?string {
+        $rutaArchivo = '/home/david/Proyectos/gcode-panel/uploads/' . $nombreArchivo;
         if (file_exists($rutaArchivo)) {
             // Ejecutamos el comando para procesar el archivo
-            $comando = escapeshellcmd("/home/david/Proyectos/plotter/plotter $rutaArchivo");
+            $comando = "echo @ " . escapeshellarg($rutaArchivo) . " > /tmp/gcode_pipe";
+            echo "Comando a ejecutar: $comando\n";
             $output = shell_exec($comando);
             echo "Archivo procesado: $output\n";
             return $output;

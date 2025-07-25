@@ -6,11 +6,12 @@
         <form id="uploadForm" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="gcodeFile">Selecciona un archivo G-code para subirlo al servidor.</label>
-                <input class="form-control " type="file" id="gcodeFile" name="gcodefile" accept=".gcode,.txt" required>
+                <input class="form-control" type="file" id="gcodeFile" name="gcodefile" accept=".gcode,.txt" required>
                 <button class="btn btn-info mt-3" type="submit">Subir</button>
-
             </div>
         </form>
+
+        <button class="btn btn-info mt-3" onclick="procesarGcode()">Procesar G-code</button>
     </div>
     <div class="col-6">
         <h2>Procesar G-code</h2>
