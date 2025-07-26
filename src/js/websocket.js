@@ -15,10 +15,8 @@ function procesarGcode() {
     conn.send("procesar " + nombreArchivo); // Enviar el comando al servidor WebSocket
 }
 
-function moverDerecha() {
-    conn.send("mover_derecha"); // Enviar el comando para mover a la derecha
-}
 
 function mover(x,y){
-    conn.send(`mover ${x} ${y}`); // Enviar el comando para mover a una posición específica
+    conn.send(`comando G91`);
+    conn.send(`comando G1 X${x} Y${y}`); // Enviar el comando para mover a una posición específica
 }

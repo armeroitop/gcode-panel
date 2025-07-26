@@ -7,17 +7,23 @@ require __DIR__ . '/vendor/autoload.php';
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Server\IoServer;
+use React\EventLoop\Loop;
+use React\Socket\SocketServer;
 
 require_once 'RatchetServer.php';
 
-$server = IoServer::factory(
-    new HttpServer(
-        new WsServer(
-            new RatchetServer()
-        )
-    ),
-    8080
-);
+$loop = Loop::get();
+$ratchetServer = new RatchetServer($loop);
+$socket = new SocketServer('0.0.0.0:8080', [], $loop);
 
+$server = new IoServer(
+    new HttpServer(
+        new WsServer($ratchetServer)
+    ),
+    $socket,
+    $loop
+);
 echo "Servidor WebSocket escuchando en el puerto 8080...\n";
-$server->run();
+$loop->run();
+
+//$server->run();
