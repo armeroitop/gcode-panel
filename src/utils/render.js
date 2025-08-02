@@ -4,12 +4,13 @@ import { cargarVista } from './cargarVista.js';
 
 // Reemplazo con soporte para componentes: {{> componente }} y {{clave}}
 export async function render(template, data = {}) {
+
     // 1. Reemplazar componentes {{> componente }}
     const componenteRegex = /{{>\s*(\w+)\s*}}/g;
     let resultado = template;
 
     let match;
-    while ((match = componenteRegex.exec(template)) !== null) {
+    while ((match = componenteRegex.exec(resultado)) !== null) {
         const nombreComponente = match[1];
         const ruta = `views/components/${nombreComponente}.html`;
 

@@ -1,0 +1,40 @@
+.navbar-custom {
+    background-color: #f0f055;
+}
+
+.navbar-custom a {
+    color: #75007a;
+}
+
+.panel-izquierdo {
+    background-color: aquamarine;
+}
+
+
+
+.listado-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #00000050;
+    border-radius: 8px;
+}
+
+.btn-left {
+    background-color: #f0f055;
+    border-color: #75007a;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+
+
+
+
+.footer {
+    background-color: #f0f055;
+    color: #75007a;
+    text-align: center;
+    padding: 10px 0;
+}
