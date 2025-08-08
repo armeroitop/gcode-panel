@@ -60,9 +60,12 @@ if (isset($routes[$metodo][$ruta])) {
 
 $router = new Router();
 
+// Rutas archivos G-code
 $router->add('GET', '/api/archivosgcode/show', [ArchivosGcodeController::class, 'show']);
-$router->add('GET', '/api/archivosgcode/show2', [ArchivosGcodeController::class, 'show2']);
+$router->add('POST', '/api/archivosgcode/upload', [ArchivosGcodeController::class, 'upload']);
+$router->add('DELETE', '/api/archivosgcode/delete', [ArchivosGcodeController::class, 'delete']);
+
+
 $router->add('GET', '/api/ping', 'responderPing');
-$router->add('POST', '/api/archivos', 'subirArchivo');
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

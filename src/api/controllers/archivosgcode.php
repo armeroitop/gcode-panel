@@ -24,11 +24,52 @@ class ArchivosGcodeController {
         return array_values($gcodeFiles);
     }
 
-    function show2() {
-        return ["mensaje" => "Mostrando archivos GCode"];
+    function upload() {
+        if (isset($_FILES['gcodefile'])) {
+            $uploadDir = __DIR__ . '/../../../uploads/';
+
+            // Asegurarse de que el directorio exista
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $fileTmpPath = $_FILES['gcodefile']['tmp_name'];
+            $fileName = basename($_FILES['gcodefile']['name']);
+            $destPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($fileTmpPath, $destPath)) {
+                //echo "Archivo subido correctamente: $fileName";
+                return ["mensaje" => "Archivo subido correctamente: $fileName"];
+            } else {
+                //echo "Error al mover el archivo.";
+                return ["mensaje" => "Error al mover el archivo."];
+            }
+        } else {
+            //echo "No se recibió ningún archivo.";
+            return ["mensaje" => "No se recibió ningún archivo."];
+        }
+        
+    }
+
+    function delete() {
+        if (isset($_POST['filename'])) {
+            $uploadDir = __DIR__ . '/../../../uploads/';
+            $fileName = basename($_POST['filename']);
+            $filePath = $uploadDir . $fileName;
+
+            if (file_exists($filePath)) {
+                if (unlink($filePath)) {
+                    return ["mensaje" => "Archivo eliminado correctamente: $fileName"];
+                } else {
+                    return ["error" => "Error al eliminar el archivo."];
+                }
+            } else {
+                return ["error" => "Archivo no encontrado."];
+            }
+        } else {
+            return ["error" => "No se especificó ningún archivo para eliminar."];
+        }
     }
 }
-
-
 
 ?>

@@ -1,5 +1,5 @@
 
-async function obtenerArchivosUpload() {
+export async function obtenerArchivosUpload() {
     try {
         const response = await fetch('/api/archivosgcode/show');
         const archivos = await response.json();
@@ -13,7 +13,7 @@ async function obtenerArchivosUpload() {
         archivos.forEach(nombre => {
             const p = document.createElement('p');
             p.textContent = nombre;
-            
+
             document.querySelector('#listaArchivos').appendChild(p);
         });
     } catch (err) {
