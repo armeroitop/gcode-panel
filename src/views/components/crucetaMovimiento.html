@@ -1,14 +1,20 @@
-<div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-    <div>
-        <div class="d-flex justify-content-center mb-2">
-            <button class="btn btn-success" onclick="mover(0,10)"><i class="bi bi-arrow-up"></i></button>
-        </div>
-        <div class="d-flex justify-content-center mb-2">
-            <button class="btn btn-success me-2" onclick="mover(-10,0)"><i class="bi bi-arrow-left"></i></button>
-            <button class="btn btn-success" onclick="mover(10,0)"><i class="bi bi-arrow-right"></i></button>
-        </div>
-        <div class="d-flex justify-content-center">
-            <button class="btn btn-success" onclick="mover(0,-10)"><i class="bi bi-arrow-down"></i></button>
-        </div>
-    </div>
+<div class="cruceta">
+    <button onclick="mover(-10,10)"><i class="bi bi-arrow-up-left"></i></button>
+    <button onclick="mover(0,10)"><i class="bi bi-arrow-up"></i></button>
+    <button onclick="mover(10,10)"><i class="bi bi-arrow-up-right"></i></button>
+
+    <button onclick="mover(-10,0)"><i class="bi bi-arrow-left"></i></button>
+    <button><i class="bi bi-bolt"></i> 10 </button> <!-- Centro -->
+    <button onclick="mover(10,0)"><i class="bi bi-arrow-right"></i></button>
+
+    <button onclick="mover(-10,-10)"><i class="bi bi-arrow-down-left"></i></button>
+    <button onclick="mover(0,-10)"><i class="bi bi-arrow-down"></i></button>
+    <button onclick="mover(10,-10)"><i class="bi bi-arrow-down-right"></i></button>
 </div>
+
+<div class="mt-3" style="display: grid; grid-template-columns: repeat(3, 60px); gap: 5px;">
+    <button onclick="mover(-10,10)"><i class="bi bi-arrow-up-left"></i></button>
+    <button class="invisible" onclick="mover(0,10)"><i class="bi bi-arrow-up"></i></button>
+    <button onclick="mover(10,10)"><i class="bi bi-arrow-up-right"></i></button>
+</div>
+<button class="btn btn-primary mt-2" style="width: 190px; height: 60px;">STOP</button>

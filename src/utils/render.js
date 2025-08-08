@@ -23,10 +23,10 @@ export async function render(template, data = {}) {
         }
     }
 
-    // 1b. Cargar scripts {{# script}}
+    // 2. Cargar scripts {{# script}}
     const scriptRegex = /{{#\s*(\w+)\s*}}/g;
     let scriptMatch;
-    while ((scriptMatch = scriptRegex.exec(template)) !== null) {
+    while ((scriptMatch = scriptRegex.exec(resultado)) !== null) {
         const nombreScript = scriptMatch[1];
         const rutaScript = `js/${nombreScript}.js`;
 
@@ -52,7 +52,7 @@ export async function render(template, data = {}) {
         resultado = resultado.replace(scriptMatch[0], '');
     }
 
-    // 2. Reemplazar variables {{clave}}
+    // 3. Reemplazar variables {{clave}}
     resultado = resultado.replace(/{{\s*([\w.]+)\s*}}/g, (_, ruta) => {
         const partes = ruta.split('.');
         let valor = data;

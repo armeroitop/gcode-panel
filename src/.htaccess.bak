@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Si es una API, redirige a router.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.*)$ /api/router.php [QSA,L]
+
+# Si no es un archivo ni un directorio, y no empieza por "api", redirige a index.html (para SPA)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteRule ^ index.html [QSA,L]
