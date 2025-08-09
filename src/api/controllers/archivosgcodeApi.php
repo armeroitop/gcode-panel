@@ -3,7 +3,6 @@
 // Opcional, para evitar que errores PHP se impriman y rompan el JSON
 //error_reporting(E_ERROR | E_PARSE);
 
-//echo json_encode("Script PHP para manejar la subida de archivos G-code.");
 class ArchivosGcodeController {
     function show() {
         // Mostrar archivos G-code disponibles
@@ -48,18 +47,19 @@ class ArchivosGcodeController {
             //echo "No se recibió ningún archivo.";
             return ["mensaje" => "No se recibió ningún archivo."];
         }
-        
     }
 
     function delete() {
-        if (isset($_POST['filename'])) {
+        $data = $this->getJsonBody();
+        $nombreArchivo = $data['nombre'] ?? null;
+
+        if ($nombreArchivo) {
             $uploadDir = __DIR__ . '/../../../uploads/';
-            $fileName = basename($_POST['filename']);
-            $filePath = $uploadDir . $fileName;
+            $filePath = $uploadDir . $nombreArchivo;
 
             if (file_exists($filePath)) {
                 if (unlink($filePath)) {
-                    return ["mensaje" => "Archivo eliminado correctamente: $fileName"];
+                    return ["mensaje" => "Archivo eliminado correctamente: $nombreArchivo"];
                 } else {
                     return ["error" => "Error al eliminar el archivo."];
                 }
@@ -69,6 +69,15 @@ class ArchivosGcodeController {
         } else {
             return ["error" => "No se especificó ningún archivo para eliminar."];
         }
+    }
+
+    function getJsonBody() {
+        static $json = null;
+        if ($json === null) {
+            $raw = file_get_contents('php://input');
+            $json = json_decode($raw, true);
+        }
+        return $json;
     }
 }
 

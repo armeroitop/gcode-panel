@@ -8,24 +8,24 @@
         <div class="d-flex justify-content-end mt-2">
             <button class="btn btn-sm btn-dark" type="submit">Subir</button>
         </div>
-
+        
     </div>
 </form>
 
 
 <div class="ventana">
     <h5 class="fw-bold">Archivos disponibles</h5>
-
-    <div class="listado-scroll" id="listaArchivos">
-        <p>Albacete</p>
-        <p>Alicante</p>
-        <p>Almería</p>
+    
+    <div class="list-group listado-scroll" id="listaArchivos">
+        <a href="#" class="list-group-item" data-bs-toggle="list">No se han cargado</a>
+        <a href="#" class="list-group-item" data-bs-toggle="list">Comete un mojón</a>
     </div>
-
+    
     <div class="d-flex justify-content-end mt-2">
-        <button class="btn btn-sm btn-dark"  onclick="procesarGcode()">Imprimir</button>
+        <button class="btn btn-sm btn-dark mx-2" id="eliminarGcode">Eliminar</button>
+        <button class="btn btn-sm btn-dark" onclick="procesarGcode()">Imprimir</button>
     </div>
 
 </div>
 
-{{# actualizarListaArchivos}}
+{{# procesarArchivos}}

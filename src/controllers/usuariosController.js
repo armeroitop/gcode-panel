@@ -6,7 +6,7 @@ export async function usuariosController() {
 
     const vista = await cargarVista('views/usuarios.html');
 
-    const datosRes = await fetch('/api/usuarios.php');
+    const datosRes = await fetch('/api/usuarios/show');
     const usuarios = await datosRes.json();
 
     const contenido = usuarios.map(u => `<li>${u.nombre}</li>`).join('');

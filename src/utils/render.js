@@ -2,7 +2,7 @@ import { cargarVista } from './cargarVista.js';
 
 
 
-// Reemplazo con soporte para componentes: {{> componente }} y {{clave}}
+// Reemplazo con soporte para componentes: {{> componente }} {{# script }} y {{clave}}
 export async function render(template, data = {}) {
 
     // 1. Reemplazar componentes {{> componente }}

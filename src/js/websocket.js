@@ -11,7 +11,15 @@ conn.onmessage = function(e) {
 
 // Función para procesar el G-code
 function procesarGcode() {
-    var nombreArchivo = document.getElementById("gcodeFile").files[0].name; // Nombre del archivo subido
+    //var nombreArchivo = document.getElementById("gcodeFile").files[0].name; // Nombre del archivo subido
+    const archivoSeleccionado = document.querySelector('#listaArchivos a.active');
+    if (!archivoSeleccionado){
+        alert("Necesitas seleccionar un archivo G-code primero.");
+        return;
+    }
+    const nombreArchivo = archivoSeleccionado.textContent;
+    console.log("Procesando archivo:", nombreArchivo);
+    
     conn.send("procesar " + nombreArchivo); // Enviar el comando al servidor WebSocket
 }
 
