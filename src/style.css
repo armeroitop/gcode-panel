@@ -48,6 +48,21 @@
     border-radius: 10px;
 }
 
+#recuadroMensajes {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    height: 200px;
+    max-width: 500px;
+    overflow-y: auto;
+}
+
+#recuadroMensajes p {
+    margin: 0;
+    padding: 5px;
+    color: white;
+}
 
 
 .footer {

@@ -1,3 +1,7 @@
+import { renderListaArchivos } from './uiArchivos.js';
+
+console.log('cargado actualizarListaArchivos.js');
+
 
 export async function obtenerArchivosUpload() {
     try {
@@ -6,30 +10,15 @@ export async function obtenerArchivosUpload() {
 
         console.log("Archivos obtenidos:", archivos);
 
-        // Limpiar el contenido previo
-        document.querySelector('#listaArchivos').innerHTML = '';
+        return archivos;
 
-        // Crear un elemento <p> por cada archivo y añadirlo al div
-        archivos.forEach(nombre => {
-            const a = document.createElement('a');
-            a.href = "#";
-            a.className = "list-group-item";
-            a.setAttribute('data-bs-toggle', 'list');
-            a.textContent = nombre;
-
-            document.querySelector('#listaArchivos').appendChild(a);
-        });
     } catch (err) {
         console.error('Error al obtener archivos:', err);
     }
 }
 
-obtenerArchivosUpload();
 
-console.log('cargado actualizarListaArchivos.js');
-
-
-export async function eliminarGcode() {
+export async function eliminarArchivo() {
     console.log('Has pulsado eliminarGcode');
 
     const archivoSeleccionado = document.querySelector('#listaArchivos a.active');
@@ -49,11 +38,18 @@ export async function eliminarGcode() {
         .then(resp => resp.text())
         .then(data => {
             console.log('Archivo eliminado:', data);
-            obtenerArchivosUpload();
         })
         .catch(err => {
             console.error('Error al eliminar el archivo:', err);
         });
 }
 
+export async function subirArchivo(formData) {
+    const resp = await fetch('/api/archivosgcode/upload', {
+        method: 'POST',
+        body: formData
+    });
 
+    // O si responde JSON, cambia por:
+    return await resp.json();
+}

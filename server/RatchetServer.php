@@ -40,7 +40,7 @@ class RatchetServer implements MessageComponentInterface {
             $nombreArchivo = substr($msg, strpos($msg, " ") + 1); // Extraemos el nombre del archivo
             echo "Nombre del archivo: $nombreArchivo\n";
             $resultado = $this->procesarArchivoGcode($nombreArchivo);
-            $from->send("Resultado onMesseage: $resultado");
+            $from->send("Archivo enviado: $nombreArchivo");
         }
 
         // Si recibimos un comando para procesar el G-code
@@ -49,7 +49,7 @@ class RatchetServer implements MessageComponentInterface {
             $comando = trim(substr($msg, strpos($msg, ' ') + 1));
 
             shell_exec("echo $comando > /tmp/gcode_pipe");
-            $from->send("Comando ejecutado $comando");
+            $from->send("Comando enviado $comando");
         }
     }
 
