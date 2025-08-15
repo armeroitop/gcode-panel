@@ -1,5 +1,4 @@
 <h5 class="fw-bold">Procesar G-code</h5>
-<p>Haz clic en el botón para procesar el G-code subido.</p>
 <div id="resultado"></div>
 
 <div class="row">
@@ -16,9 +15,20 @@
 
 </div>
 
+<div x-data  x-init="$store.menu = { posX: 0, posY: 0 }">
+    <span x-text="`X: ${$store.menu.posX}`"></span> 
+    </br>
+    <span x-text="`Y: ${$store.menu.posY}`"></span>
+</div>
+
 <div class="row">
     <div class="col-12">
         <div id="recuadroMensajes" class="d-flex flex-column mt-5">
+            <!-- Aquí se mostrará los mensajes de comandos websocket -->
         </div>
     </div>
 </div>
+
+
+
+{{# actulizadorPosicion}}
