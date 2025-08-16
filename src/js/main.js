@@ -1,5 +1,6 @@
 import { WSClient } from "./wsClient.js";
 import { GcodeService } from "./gcodeService.js";
+import { printPosicion } from "./actulizadorPosicion.js";
 
 const wsClient = new WSClient(`ws://${window.location.hostname}:8080`);
 const gcodeService = new GcodeService(wsClient);
@@ -14,6 +15,8 @@ wsClient.onMessage((message) => {
     const mensajes = document.getElementById("recuadroMensajes");
     mensajes.innerHTML += `<p>${message}</p>`;
     mensajes.scrollTop = mensajes.scrollHeight; // Desplazar hacia abajo para mostrar el último
+
+    printPosicion(message); // Actualizar la posición si el mensaje es de tipo "Posicion actual:"
 });
 
 // Por si la anterior no funciona, dejo esta alternativa por aquí
@@ -36,4 +39,8 @@ window.procesarGcode = function () {
 
 window.mover = function (x, y) {
     gcodeService.mover(x, y);
+}
+
+window.enviarComando = function (comando) {
+    gcodeService.enviarComando(comando);
 }

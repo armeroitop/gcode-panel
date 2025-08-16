@@ -66,6 +66,8 @@ class RatchetServer implements MessageComponentInterface {
             return;
         }
 
+        echo "FIFO para lectura iniciado.\n";
+
         stream_set_blocking($fifo, false);
 
         $this->loop->addPeriodicTimer(0.1, function () use ($fifo) {

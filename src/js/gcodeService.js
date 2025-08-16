@@ -12,4 +12,8 @@ export class GcodeService {
         this.wsClient.send(`comando G91`);
         this.wsClient.send(`comando G1 X${x} Y${y}`); // Enviar el comando para mover a una posición específica
     }
+
+    enviarComando(comando) {
+        this.wsClient.send(`comando ${comando}`); // Enviar el comando al servidor WebSocket
+    }
 }
