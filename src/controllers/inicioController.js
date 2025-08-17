@@ -1,15 +1,9 @@
-import { cargarVista } from '../utils/cargarVista.js';
-import { render } from '../utils/render.js';
+import { ControllerBase } from "./ControllerBase.js";
 
-/*export async function inicioController() {
-    return await cargarVista('views/inicio.html');
-}*/
-
-
-export class InicioController {
+export class InicioController  extends ControllerBase {
     async index() {
-        const vista = await cargarVista('views/inicio.html');
-        return render(vista, {
+        const vista = await this.cargarVista('views/inicio.html');
+        return this.render(vista, {
             titulo: 'Inicio'
         });
     }

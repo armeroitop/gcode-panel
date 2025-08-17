@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 require_once 'core/Router.php';
 require_once 'controllers/archivosgcodeApi.php';
 require_once 'controllers/usuariosApi.php';
-//require_once 'controllers/utilidades.php';
+require_once 'controllers/parametrosApi.php';
 
 
 $router = new Router();
@@ -26,6 +26,11 @@ $router->add('DELETE', '/api/archivosgcode/delete', [ArchivosGcodeController::cl
 // Rutas usuarios
 $router->add('GET', '/api/usuarios/show', [UsuariosController::class, 'show']);
 
-$router->add('GET', '/api/ping', 'responderPing');
 
+// Rutas parámetros
+$router->add('GET', '/api/parametros/show', [ParametrosController::class, 'show']);
+
+
+// Este debe ser el último paso, para que todas las rutas se hayan añadido
+// y se pueda hacer el dispatch correctamente
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

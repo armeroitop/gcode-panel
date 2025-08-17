@@ -23,7 +23,22 @@ export async function render(template, data = {}) {
         }
     }
 
+    // 2. Capturar <script> y cargar scripts dinámicamente
+    const scripts = [];
+    resultado = resultado.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match, code) => {
+        scripts.push(code.trim());
+        return ''; // eliminamos del HTML para que no se duplique
+    });
+
+    /*scripts.forEach(code => {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.text = code;  // inserta el contenido del script
+        document.body.appendChild(script); // lo añade al DOM y se ejecuta
+    });*/
+
     // 2. Cargar scripts {{# script}}
+    const scriptsModules = [];
     const scriptRegex = /{{#\s*(\w+)\s*}}/g;
     let scriptMatch;
     while ((scriptMatch = scriptRegex.exec(resultado)) !== null) {
@@ -34,12 +49,21 @@ export async function render(template, data = {}) {
         if (!document.querySelector(`script[src="${rutaScript}"]`)) {
             try {
                 // Verifica si el archivo existe con fetch
-                const response = await fetch(rutaScript, { method: 'HEAD' });
-                if (response.ok) {
-                    const script = document.createElement('script');
+                const head = await fetch(rutaScript, { method: 'HEAD' });
+                if (head.ok) {
+                    /*const script = document.createElement('script');
                     script.src = rutaScript;
                     script.type = 'module';
-                    document.body.appendChild(script);
+                    document.body.appendChild(script);*/
+                    console.log(`Cargando script: ${rutaScript}`);
+                    
+                    // TODO: Obtener el contenido del script y añadirlo al array
+                    //const script = await fetch(rutaScript).then(res => res.text());
+                    //const response = await fetch(rutaScript);
+                    //const script = await response.text();
+                    scriptsModules.push(rutaScript); // Añade el contenido del script al array
+                    
+
                 } else {
                     console.warn(`El script no existe: ${rutaScript}`);
                 }
@@ -63,7 +87,12 @@ export async function render(template, data = {}) {
         return valor ?? '';
     });
 
-    return resultado;
+    //return resultado;
+    return {
+        html: resultado,
+        scripts: scripts,
+        scriptsModules: scriptsModules
+    };
 
 
 }

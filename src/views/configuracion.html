@@ -1,0 +1,103 @@
+{{> barraNavegacion}}
+
+<div class="accordion" id="accordionExample">
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+                Accordion Item #1
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+
+                <div class="row  align-items-center mt-1">
+                    <div class="col-4 text-end ml-3">
+                        <label for="vel_max" class="form-label mb-0">Velocidad máxima</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
+                            aria-label="200000 um/s" value="{{parametros.velocidadMax}}">
+                    </div>
+                </div>
+
+                <div class="row  align-items-center mt-1">
+                    <div class="col-4 text-end ml-3">
+                        <label for="aceleracion" class="form-label mb-0">Aceleracion</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" name="aceleracion" class="form-control" placeholder="Last name"
+                            aria-label="Last name" value="{{parametros.aceleracion}}">
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
+                Accordion Item #2
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <strong>This is the second item’s accordion body.</strong> It is hidden by default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+                aria-expanded="false" aria-controls="collapseThree">
+                Accordion Item #3
+            </button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse show">
+            <div class="accordion-body">
+                <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse
+                plugin adds the appropriate classes that we use to style each element. These classes control the overall
+                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go
+                within the <code>.accordion-body</code>, though the transition does limit overflow.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+        // Guardamos los valores iniciales
+        const inputs = document.querySelectorAll("input");
+        console.log(inputs);
+        inputs.forEach(input => {
+            input.dataset.original = input.value;
+            console.log("hola");
+
+            input.addEventListener("input", () => {
+                if (input.value !== input.dataset.original) {
+                    input.style.border = "2px solid orange";
+                } else {
+                    input.style.border = "";
+                }
+            });
+        });
+    
+</script>
+
+{{> barraPie }}
+
+{{# unscript}}
+    
