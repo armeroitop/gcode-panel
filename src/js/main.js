@@ -7,6 +7,7 @@ const gcodeService = new GcodeService(wsClient);
 
 wsClient.onOpen(() => {
     console.log("Conexión WebSocket abierta");
+    document.dispatchEvent(new Event("wsConectado"));
 });
 
 wsClient.onMessage((message) => {
@@ -30,7 +31,7 @@ window.procesarGcode = function () {
         alert("Necesitas seleccionar un archivo G-code primero.");
         return;
     }
-    
+
     console.log("Procesando archivo:", archivoSeleccionado.textContent);
 
     gcodeService.procesarArchivo(archivoSeleccionado.textContent); // Enviar el comando al servidor WebSocket
@@ -44,3 +45,8 @@ window.mover = function (x, y) {
 window.enviarComando = function (comando) {
     gcodeService.enviarComando(comando);
 }
+
+window.estadoConexion = function () {
+    return wsClient.conn.readyState;
+}
+

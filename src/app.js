@@ -1,6 +1,9 @@
 import { routes } from './routes.js';
 console.log('se ha cargado el archivo app.js');
 
+// Set global para los tags de scripts ya añadidos
+const scriptTagsCargados = new Set();
+
 async function router() {
     const hash = location.hash.slice(1) || '/';
     const view = routes[hash] || (() => `<h1>401</h1>`);
@@ -15,11 +18,29 @@ async function router() {
 
 
     // 2. Ejecutamos los scripts extraídos
-    result.scripts.forEach(code => {
+    // TODO: Mejorar la gestión de scripts para evitar duplicados
+    // ahora result.scripts es un array de objetos {tag, code} y debo comprobar en un List si ya existe ese tag antes de añadirlo
+    // si lo añado, lo añado al List para futuras comprobaciones
+
+    /*result.scripts.forEach(code => {
         const script = document.createElement('script');
         script.type = 'text/javascript';       // si usas import/export, sino 'text/javascript'
         script.text = code;
         container.appendChild(script);
+    });*/
+
+    const contenedorScripts = document.getElementById('scripts_dimanicos');
+    result.scripts.forEach(({tag,code})=> {
+        if (!scriptTagsCargados.has(tag)) {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';       // si usas import/export, sino 'text/javascript'
+            script.text = code;
+            contenedorScripts.appendChild(script);
+            scriptTagsCargados.add(tag); // Añadir el tag al Set para futuras comprobaciones
+            console.log(`Renderiza el script con tag "${tag}".`);
+        } else {
+            console.log(`El script con tag "${tag}" ya ha sido cargado, se omite.`);
+        }
     });
 
     // 3. Cargamos los módulos si es necesario

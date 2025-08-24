@@ -12,6 +12,7 @@ export class WSClient {
 
         this.conn.onclose = (e) => {
             console.warn('WebSocket closed:', e);
+            document.dispatchEvent(new Event("wsDesconectado"));
         }
 
     }

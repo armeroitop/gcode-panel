@@ -78,8 +78,9 @@
 
 
 <script>
-    
-        // Guardamos los valores iniciales
+
+    // Guardamos los valores iniciales
+    function modificaBorde() {
         const inputs = document.querySelectorAll("input");
         console.log(inputs);
         inputs.forEach(input => {
@@ -89,15 +90,13 @@
             input.addEventListener("input", () => {
                 if (input.value !== input.dataset.original) {
                     input.style.border = "2px solid orange";
+                    console.log("cambio");
                 } else {
                     input.style.border = "";
                 }
             });
         });
-    
+    }
+    modificaBorde();
+
 </script>
-
-{{> barraPie }}
-
-{{# unscript}}
-    

@@ -1,7 +1,57 @@
-<nav>
-    <div class="navbar navbar-expand-sm navbar-custom px-3">
-        <a class="navbar-brand" href="#/">G-code Panel</a>
-        <a class="navbar-brand" href="#/usuarios">Usuarios</a>        
-        <a class="navbar-brand" href="#/configuracion">Configuración</a>        
+<nav class="navbar navbar-expand-sm navbar-custom px-3">
+  <div class="container-fluid d-flex justify-content-between">
+    
+    <!-- Lado izquierdo: enlaces -->
+    <div class="d-flex">
+      <a class="navbar-brand" href="#/">G-code Panel</a>
+      <a class="navbar-brand" href="#/usuarios">Usuarios</a>
+      <a class="navbar-brand" href="#/configuracion">Configuración</a>
     </div>
+
+    <!-- Lado derecho: estado conexión -->
+    <span id="estadoConexion" class="badge bg-secondary">Desconectado</span>
+
+  </div>
 </nav>
+
+<script>
+
+    /*if(typeof estadoConexionElem === 'undefined') {
+      
+    }*/
+    let estadoConexionElem = document.getElementById("estadoConexion");
+
+    function actualizarEstadoConexion() {
+        let estado = window.estadoConexion();
+        let textoEstado = "";
+        switch (estado) {
+            case 0:
+                textoEstado = "Conectando";
+                break;
+            case 1:
+                textoEstado = "Conectado";
+                break;
+            case 2:
+                textoEstado = "Desconectando";
+                break;
+            case 3:
+                textoEstado = "Desconectado";
+                break;
+            default:
+                textoEstado = "Desconocido";
+        }
+        estadoConexionElem.textContent = `${textoEstado}`;
+        estadoConexionElem.className = `badge ${estado === 1 ? 'bg-success' : 'bg-danger'
+            }`;
+            console.log('Badged de conexión actualizado');
+    }
+
+    // Actualiza el estado cada segundo
+    //setInterval(actualizarEstadoConexion, 1000);
+    actualizarEstadoConexion();
+
+    //FIXME: Tengo el problema que se acumulan los eventos añadidos por cada vez que navego por el nav
+    document.addEventListener("wsConectado", actualizarEstadoConexion);
+    document.addEventListener("wsDesconectado", actualizarEstadoConexion);
+
+</script>

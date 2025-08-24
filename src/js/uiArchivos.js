@@ -1,5 +1,6 @@
 export function renderListaArchivos(lista) {
     const contenedor = document.querySelector('#listaArchivos');
+    if (!contenedor) return;
     contenedor.innerHTML = '';
     lista.forEach(nombre => {
         const a = document.createElement('a');
