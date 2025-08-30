@@ -54,4 +54,9 @@
     document.addEventListener("wsConectado", actualizarEstadoConexion);
     document.addEventListener("wsDesconectado", actualizarEstadoConexion);
 
+    document.addEventListener("routerRecargado", () => {
+        estadoConexionElem = document.getElementById("estadoConexion");
+        actualizarEstadoConexion();
+    });
+
 </script>

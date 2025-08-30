@@ -11,6 +11,9 @@ console.log('se ha cargado el archivo subirArchivo.js');
 
 
 async function init() {
+    //debugger; // fuerza detenerse aquí
+    console.log('Has llamado a init() de appArchivo.js');
+
     const archivos = await obtenerArchivosUpload();
     renderListaArchivos(archivos);
 
@@ -49,7 +52,7 @@ async function init() {
 
 init();
 
-
+document.addEventListener("routerRecargado", init); //TODO: falta meter comprobaciones para que se ejecute solo en la pagina que debe
 
 
 
