@@ -7,10 +7,24 @@ class CanvasManager {
         }
         this.ctx = this.canvas.getContext("2d");
         this.scale = 2; // mm -> px, configurable
+
+        // Aplicamos transformación para sistema cartesiano
+        //this.ctx.translate(0, this.canvas.height);
+        //this.ctx.scale(1, -1);
     }
 
     clear() {
+        this.ctx.save();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
+        //this.ctx.setTransform(1, 0, 0, -1, 0, this.canvas.height); // reset transform temporal
+    }
+
+    modificarOrigen() {
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);      // identidad
+        this.ctx.translate(this.canvas.width/2, this.canvas.height/2);    // bajar origen
+        this.ctx.scale(1, -1);                        // invertir eje Y
     }
 
     getContext() {
@@ -43,7 +57,7 @@ class Ejes {
         const height = this.ctx.canvas.height;
         const centerX = width / 2;
         const centerY = height / 2;
-     
+
         this.ctx.lineWidth = 1;
 
         // Eje X
@@ -91,15 +105,14 @@ class Ejes {
     }
 }
 
-class Trayectoria {
+class Trazado {
     constructor(ctx, scale) {
         this.ctx = ctx;
         this.scale = scale;
     }
 
-    dibujarTrayectoria(path) {
+    dibujarTrazado(path) {
         if (path.length === 0) return;
-        debugger;
 
         this.ctx.beginPath();
         this.ctx.moveTo(path[0].x * this.scale, path[0].y * this.scale);
@@ -126,48 +139,97 @@ class Cabezal {
     }
 }
 
-
-class GcodeVisualizer {
+class VisorTrazado {
     constructor(canvasId) {
         this.canvasManager = new CanvasManager(canvasId);
         this.ejes = new Ejes(this.canvasManager.getContext(), this.canvasManager.getScale());
-        this.trayectoria = new Trayectoria(this.canvasManager.getContext(), this.canvasManager.getScale());
-        this.cabezal = new Cabezal(this.canvasManager.getContext(), this.canvasManager.getScale());
+        this.trazado = new Trazado(this.canvasManager.getContext(), this.canvasManager.getScale());
     }
 
     init() {
         this.canvasManager.clear();
         this.canvasManager.resize();
         this.ejes.dibujarEjes();
+        this.canvasManager.modificarOrigen();
     }
 
-    dibujarTrayectoria(path) {
-        this.trayectoria.dibujarTrayectoria(path);
-        if (path.length > 0) {
-            this.cabezal.dibujarCabezal(path[path.length - 1]);
-        }
+    dibujarTrazado(path) {
+        this.trazado.dibujarTrazado(path);
     }
+}
+
+class VisorCabezal {
+    constructor(canvasId) {
+        this.canvasManager = new CanvasManager(canvasId);
+        this.cabezal = new Cabezal(this.canvasManager.getContext(), this.canvasManager.getScale());
+    }
+    
+    init() {
+        this.canvasManager.clear();
+        this.canvasManager.resize();
+        this.canvasManager.modificarOrigen();
+    }
+    dibujarCabezal(pos) {
+        this.cabezal.dibujarCabezal(pos);
+    }
+
 }
 
 
 
-
-
-
+let visorTrazado;
+let visorCabezal;
+let posX_ultima = 0;
+let posY_ultima = 0;
 
 export function init() {
-    
-    const visualizer = new GcodeVisualizer("visorGcodeCanvas");
-    visualizer.init();
 
-    // Ejemplo de trayectoria
-    const ejemploPath = [
-        { x: 0, y: 0 },
-        { x: 50, y: 50 },
-        { x: 100, y: 50 }       
-    ];
-    visualizer.dibujarTrayectoria(ejemploPath);
+     visorTrazado = new VisorTrazado("canvasTrazado");
+     visorCabezal = new VisorCabezal("canvasCabezal");
 
+    visorTrazado.init();
+    visorCabezal.init();
+}
 
+export function dibujarCabezal(message){
+
+    if (message.startsWith("Posicion actual:")) {
+        const partes = message.split(": ");
+        if (partes.length === 2) {
+            const coordenadas = partes[1].replace(/[()]/g, "").split(", ");
+            if (coordenadas.length === 2) {
+                const posX = parseFloat(coordenadas[0]);
+                const posY = parseFloat(coordenadas[1]);
+
+                visorCabezal.init();
+                visorCabezal.dibujarCabezal({ x: posX, y: posY });
+                
+                console.log(`Posición actualizada: X=${posX}, Y=${posY}`);
+            } 
+        }
+    }
+
+}
+
+export function dibujarTrazado(message) {
+
+    if (message.startsWith("Posicion actual:")) {
+        const partes = message.split(": ");
+        if (partes.length === 2) {
+            const coordenadas = partes[1].replace(/[()]/g, "").split(", ");
+            if (coordenadas.length === 2) {
+                const posX = parseFloat(coordenadas[0]);
+                const posY = parseFloat(coordenadas[1]);
+
+                const trazado = [{ x: posX_ultima, y: posY_ultima }, { x: posX, y: posY }];
+
+                //visorTrazado.init();
+                visorTrazado.dibujarTrazado(trazado);
+                
+                posX_ultima = posX;
+                posY_ultima = posY;
+            } 
+        } 
+    }
 
 }

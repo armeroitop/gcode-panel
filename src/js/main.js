@@ -2,6 +2,7 @@ import { WSClient } from "./wsClient.js";
 import { GcodeService } from "./gcodeService.js";
 import { printPosicion } from "./actulizadorPosicion.js";
 import { mostrarEnRecuadroMensajes} from "./panelCentral.js";
+import { dibujarCabezal, dibujarTrazado } from "./canvasGcode.js";
 
 const wsClient = new WSClient(`ws://${window.location.hostname}:8080`);
 const gcodeService = new GcodeService(wsClient);
@@ -48,6 +49,8 @@ function manejarMensajes(message) {
 
     if (esMensajePosicion(message)) {
         printPosicion(message);
+        dibujarCabezal(message);
+        dibujarTrazado(message);
     }
 
     // Puedes añadir más condiciones y funciones aquí:
