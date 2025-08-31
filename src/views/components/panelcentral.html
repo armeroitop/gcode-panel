@@ -2,21 +2,23 @@
 <div id="resultado"></div>
 
 <div class="row">
-    <div class="col-7">
-        <div class="visor" id="visorGcode"
-            style="height: 300px; max-width: 500px; background-color: chocolate; overflow-y: auto;">
+    <div class="col-8">
+        <div class="visor" id="visorGcode" style="height: 300px; max-width: 500px; background-color: chocolate; ">
+
             <!-- Aquí se mostrará el contenido del G-code -->
+            <canvas id="visorGcodeCanvas" width="500" height="300" style="background: rgb(225, 252, 245); border: 1px solid black;"></canvas>
+            {{# canvasGcode}}
         </div>
     </div>
 
-    <div class="col-5">
+    <div class="col-4">
         {{> crucetaMovimiento}}
     </div>
 
 </div>
 
-<div x-data  x-init="$store.menu = { posX: 0, posY: 0 }">
-    <span x-text="`X: ${$store.menu.posX}`"></span> 
+<div x-data x-init="$store.menu = { posX: 0, posY: 0 }">
+    <span x-text="`X: ${$store.menu.posX}`"></span>
     </br>
     <span x-text="`Y: ${$store.menu.posY}`"></span>
 </div>
@@ -30,5 +32,6 @@
 </div>
 
 
+{{# panelCentral}}
 
 {{# actulizadorPosicion}}

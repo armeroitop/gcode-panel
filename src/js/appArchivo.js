@@ -6,11 +6,11 @@ import {
 
 import { renderListaArchivos } from './uiArchivos.js';
 
-console.log('se ha cargado el archivo subirArchivo.js');
+console.log('se ha cargado el archivo appArchivo.js');
 
 
 
-async function init() {
+export async function init() {
     //debugger; // fuerza detenerse aquí
     console.log('Has llamado a init() de appArchivo.js');
 
@@ -50,9 +50,9 @@ async function init() {
 
 }
 
-init();
+//init();
 
-document.addEventListener("routerRecargado", init); //TODO: falta meter comprobaciones para que se ejecute solo en la pagina que debe
+//document.addEventListener("routerRecargado", init); //TODO: falta meter comprobaciones para que se ejecute solo en la pagina que debe
 
 
 

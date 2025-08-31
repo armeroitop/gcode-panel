@@ -1,6 +1,7 @@
 import { WSClient } from "./wsClient.js";
 import { GcodeService } from "./gcodeService.js";
 import { printPosicion } from "./actulizadorPosicion.js";
+import { mostrarEnRecuadroMensajes} from "./panelCentral.js";
 
 const wsClient = new WSClient(`ws://${window.location.hostname}:8080`);
 const gcodeService = new GcodeService(wsClient);
@@ -12,16 +13,8 @@ wsClient.onOpen(() => {
 
 wsClient.onMessage((message) => {
     console.log("Mensaje recibido: " + message);
-    // TODO: Aqui hay que pasar los mensajes recibidos el panel central, en el recuadro de mensajes negro
-    const mensajes = document.getElementById("recuadroMensajes");
-    mensajes.innerHTML += `<p>${message}</p>`;
-    mensajes.scrollTop = mensajes.scrollHeight; // Desplazar hacia abajo para mostrar el último
-
-    printPosicion(message); // Actualizar la posición si el mensaje es de tipo "Posicion actual:"
+    manejarMensajes(message);
 });
-
-// Por si la anterior no funciona, dejo esta alternativa por aquí
-/* wsClient.onMessage(msg => console.log("Mensaje recibido:", msg)); */
 
 // Función para procesar el G-code
 window.procesarGcode = function () {
@@ -50,3 +43,36 @@ window.estadoConexion = function () {
     return wsClient.conn.readyState;
 }
 
+function manejarMensajes(message) {
+    mostrarEnRecuadroMensajes(message);
+
+    if (esMensajePosicion(message)) {
+        printPosicion(message);
+    }
+
+    // Puedes añadir más condiciones y funciones aquí:
+    if (esMensajeError(message)) {
+        mostrarError(message);
+    }
+
+    // ...otros tipos de mensajes
+}
+
+/*function mostrarEnRecuadroMensajes(message) {
+     // Aqui hay que pasar los mensajes recibidos el panel central, en el recuadro de mensajes negro
+    const mensajes = document.getElementById("recuadroMensajes");
+    mensajes.innerHTML += `<p>${message}</p>`;
+    mensajes.scrollTop = mensajes.scrollHeight; // Desplazar hacia abajo para mostrar el último
+}*/
+
+function esMensajePosicion(message) {
+    return message.startsWith("Posicion actual:");
+}
+
+function esMensajeError(message) {
+    return message.startsWith("ERROR:");
+}
+
+function mostrarError(message) {
+    alert("Error recibido: " + message);
+}

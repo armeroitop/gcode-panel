@@ -41,12 +41,6 @@ export async function render(vista, data = {}) {
     const scripts = [];
     // Capturar el atributo tag para evitar duplicados y pasarlos al array de scripts 
     // como un array asociativo {tag: codigo}
-
-    /*resultado = resultado.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, (match, code) => {
-        scripts.push(code.trim());
-        return ''; // eliminamos del HTML para que no se duplique
-    });*/
-
     resultado = resultado.replace(
         /<script\b[^>]*\btag="([^"]+)"[^>]*>([\s\S]*?)<\/script>/gi,
         (match, tag, code) => {
@@ -58,8 +52,8 @@ export async function render(vista, data = {}) {
 
     // 3. Cargar scripts modules {{# script}}
     const scriptsModules = [];
-    const scriptRegex = /{{#\s*(\w+)\s*}}/g;
-    let scriptMatch;
+    const scriptRegex = /{{#\s*(\w+)\s*}}/;
+    let scriptMatch = '';
     while ((scriptMatch = scriptRegex.exec(resultado)) !== null) {
         const nombreScript = scriptMatch[1];
         const rutaScript = `./js/${nombreScript}.js`;

@@ -1,6 +1,4 @@
 
-
-
 function initMenuStore() {
     if (!Alpine.store('menu')) {
         Alpine.store('menu', { 
@@ -23,14 +21,7 @@ document.addEventListener('alpine:init', () => {
 
 // Si Alpine ya está listo, lo ejecutamos directamente
 if (window.Alpine && Alpine.start) {
-    initMenuStore();
-    // Aquí también puedes ejecutar cualquier lógica que quieras después de "alpine:initialized"
-    /*setInterval(() => {
-        console.log(Alpine.store('menu').posX); // 0
-        Alpine.store('menu').posX ++;
-        Alpine.store('menu').posY +=2;
-        console.log(Alpine.store('menu').posX); // 5
-    }, 1000);*/
+    initMenuStore();    
 }
 
 console.log("Alpine store initialized with posX = 0");
@@ -56,3 +47,4 @@ export function printPosicion(message){
         }
     }
 }
+

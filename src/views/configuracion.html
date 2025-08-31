@@ -97,9 +97,11 @@
             });
         });
     }
-    modificaBorde();
 
-    // Si quiero que se aplique cada vez que se recarga la vista tengo que meterle este evento
-    document.addEventListener("routerRecargado", modificaBorde);
+    // Cuando se recarga la vista "/configuracion" tengo que meterle este evento
+    document.addEventListener("/configuracion", ( ) => {
+        console.log("disparo de evento vista /configuracion");
+        modificaBorde();
+    });
 
 </script>

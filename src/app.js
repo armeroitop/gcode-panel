@@ -36,33 +36,17 @@ async function router() {
         }
     });
 
-    // 3. Cargamos los módulos si es necesario
-    /*result.scriptsModules.forEach(async (rutaScript) => {
-        if (!document.querySelector(`script[src="${rutaScript}"]`)) {
-            try {
-                // Verifica si el archivo existe con fetch
-                const response = await fetch(rutaScript, { method: 'HEAD' });
-                if (response.ok) {
-                    const script = document.createElement('script');
-                    script.src = rutaScript;
-                    script.type = 'module';
-                    document.body.appendChild(script);
-                } else {
-                    console.warn(`El script no existe: ${rutaScript}`);
-                }
-            } catch (err) {
-                console.error(`Error al cargar el script: ${rutaScript}`, err);
-            }
-        }
-    });*/
+    // 3. Cargamos los módulos si es necesario    
     for (const rutaScript of result.scriptsModules) {
         try {
             // Import dinámico del módulo
             const module = await import(rutaScript);
             //const module = await import(rutaScript + "?t=" + Date.now());
             // Si el módulo tiene una función init, la ejecutamos
+            console.log(`Módulo importado: ${rutaScript}`, module);
             if (typeof module.init === "function") {
                 module.init();
+                console.log(`Módulo importado y función init() ejecutada: ${rutaScript}`);
             }
         } catch (err) {
             console.error(`Error al importar el módulo: ${rutaScript}`, err);
@@ -71,6 +55,7 @@ async function router() {
 
 
     document.dispatchEvent(new Event("routerRecargado"));
+    document.dispatchEvent(new Event(hash));
 }
 
 window.addEventListener('hashchange', router);
