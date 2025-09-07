@@ -57,9 +57,11 @@ class ArchivosGcodeController {
             $uploadDir = __DIR__ . '/../../../uploads/';
             $filePath = $uploadDir . $nombreArchivo;
 
+            echo "La ruta de archivo" . $filePath;
+
             if (file_exists($filePath)) {
                 if (unlink($filePath)) {
-                    return ["mensaje" => "Archivo eliminado correctamente: $nombreArchivo"];
+                    return ["mensaje" => "Archivo eliminado correctamente: $filePath"];
                 } else {
                     return ["error" => "Error al eliminar el archivo."];
                 }

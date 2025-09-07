@@ -85,7 +85,7 @@ class RatchetServer implements MessageComponentInterface {
     // Función para procesar el G-code
     private function procesarArchivoGcode(string $nombreArchivo): ?string {
         //$rutaArchivo = '/home/david/Proyectos/gcode-panel/uploads/' . $nombreArchivo;
-        $rutaArchivo = __DIR__ . '/../upload/' . $nombreArchivo;
+        $rutaArchivo = __DIR__ . '/../uploads/' . $nombreArchivo;
         if (file_exists($rutaArchivo)) {
             // Ejecutamos el comando para procesar el archivo
             $comando = "echo @ " . escapeshellarg($rutaArchivo) . " > /tmp/gcode_pipe";
@@ -94,7 +94,7 @@ class RatchetServer implements MessageComponentInterface {
             echo "Archivo procesado: $output\n";
             return $output;
         } else {
-            echo "Archivo no encontrado.\n";
+            echo "Archivo no encontrado: $rutaArchivo\n"; ;
             return "Archivo no encontrado.";
         }
     }
