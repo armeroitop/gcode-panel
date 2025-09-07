@@ -226,11 +226,11 @@ export function dibujarTrazado(mensaje) {
         const trazado = [{ x: posX_ultima, y: posY_ultima }, pos];
 
         if(boliPintando){
-            visorTrazado.color = "blue";
-            visorTrazado.grosor = 2;
+            visorTrazado.trazado.color = "blue";
+            visorTrazado.trazado.grosor = 2;
         }else{
-            visorTrazado.color = "lightgray";
-            visorTrazado.grosor = 1;
+            visorTrazado.trazado.color = "lightgray";
+            visorTrazado.trazado.grosor = 1;
         }
 
         visorTrazado.dibujarTrazado(trazado);
