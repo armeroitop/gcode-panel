@@ -1,4 +1,10 @@
 
+import {
+    parsearPosicion,
+    parsearMovimientoRelativo,
+    parsearMovimientoEnEjecucion,
+    parsearPosicionBoli
+} from "../utils/parseadorMensajes.js";
 class CanvasManager {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -23,7 +29,7 @@ class CanvasManager {
 
     modificarOrigen() {
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);      // identidad
-        this.ctx.translate(this.canvas.width/2, this.canvas.height/2);    // bajar origen
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);    // bajar origen
         this.ctx.scale(1, -1);                        // invertir eje Y
     }
 
@@ -106,9 +112,11 @@ class Ejes {
 }
 
 class Trazado {
-    constructor(ctx, scale) {
+    constructor(ctx, scale, color = "blue", grosor = 2) {
         this.ctx = ctx;
         this.scale = scale;
+        this.color = color;
+        this.grosor = grosor;
     }
 
     dibujarTrazado(path) {
@@ -119,8 +127,8 @@ class Trazado {
         for (let i = 1; i < path.length; i++) {
             this.ctx.lineTo(path[i].x * this.scale, path[i].y * this.scale);
         }
-        this.ctx.strokeStyle = "blue";
-        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = this.color;
+        this.ctx.lineWidth = this.grosor;
         this.ctx.stroke();
     }
 }
@@ -131,8 +139,8 @@ class Cabezal {
         this.scale = scale;
     }
 
-    dibujarCabezal(pos) {
-        this.ctx.fillStyle = "red";
+    dibujarCabezal(pos, color = "red") {
+        this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.arc(pos.x * this.scale, pos.y * this.scale, 5, 0, Math.PI * 2);
         this.ctx.fill();
@@ -163,14 +171,14 @@ class VisorCabezal {
         this.canvasManager = new CanvasManager(canvasId);
         this.cabezal = new Cabezal(this.canvasManager.getContext(), this.canvasManager.getScale());
     }
-    
+
     init() {
         this.canvasManager.clear();
         this.canvasManager.resize();
         this.canvasManager.modificarOrigen();
     }
-    dibujarCabezal(pos) {
-        this.cabezal.dibujarCabezal(pos);
+    dibujarCabezal(pos, color) {
+        this.cabezal.dibujarCabezal(pos, color);
     }
 
 }
@@ -181,55 +189,90 @@ let visorTrazado;
 let visorCabezal;
 let posX_ultima = 0;
 let posY_ultima = 0;
+let movimientoRelativo = false;
+let boliPintando = false;
 
 export function init() {
 
-     visorTrazado = new VisorTrazado("canvasTrazado");
-     visorCabezal = new VisorCabezal("canvasCabezal");
+    visorTrazado = new VisorTrazado("canvasTrazado");
+    visorCabezal = new VisorCabezal("canvasCabezal");
 
     visorTrazado.init();
     visorCabezal.init();
 }
 
-export function dibujarCabezal(message){
-
-    if (message.startsWith("Posicion actual:")) {
-        const partes = message.split(": ");
-        if (partes.length === 2) {
-            const coordenadas = partes[1].replace(/[()]/g, "").split(", ");
-            if (coordenadas.length === 2) {
-                const posX = parseFloat(coordenadas[0]);
-                const posY = parseFloat(coordenadas[1]);
-
-                visorCabezal.init();
-                visorCabezal.dibujarCabezal({ x: posX, y: posY });
-                
-                console.log(`Posición actualizada: X=${posX}, Y=${posY}`);
-            } 
-        }
+export function dibujarCabezal(mensaje) {
+    const pos = parsearPosicion(mensaje);
+    if (pos) {
+        visorCabezal.init();
+        visorCabezal.dibujarCabezal(pos);
     }
-
 }
 
-export function dibujarTrazado(message) {
+export function actualizarPosicionTarget(mensaje) {
+    // Comprobar si el movimiento a sido relativo o absoluto
+    actualizaMovimientoRelativo(mensaje);
 
-    if (message.startsWith("Posicion actual:")) {
-        const partes = message.split(": ");
-        if (partes.length === 2) {
-            const coordenadas = partes[1].replace(/[()]/g, "").split(", ");
-            if (coordenadas.length === 2) {
-                const posX = parseFloat(coordenadas[0]);
-                const posY = parseFloat(coordenadas[1]);
+    // Dibujar el target de proxima posicion,
+    // las coordenadas proximas serán: Si es m.relativo serán las ultimas mas el movimiento
+    // y si son absolutas pues las que indica el comando G1 Xtal Ytal
+    dibujarTarget(mensaje);
+}
 
-                const trazado = [{ x: posX_ultima, y: posY_ultima }, { x: posX, y: posY }];
+export function dibujarTrazado(mensaje) {    
 
-                //visorTrazado.init();
-                visorTrazado.dibujarTrazado(trazado);
-                
-                posX_ultima = posX;
-                posY_ultima = posY;
-            } 
-        } 
+    const pos = parsearPosicion(mensaje);
+    if (pos) {
+        const trazado = [{ x: posX_ultima, y: posY_ultima }, pos];
+
+        if(boliPintando){
+            visorTrazado.color = "blue";
+            visorTrazado.grosor = 2;
+        }else{
+            visorTrazado.color = "lightgray";
+            visorTrazado.grosor = 1;
+        }
+
+        visorTrazado.dibujarTrazado(trazado);
+
+        posX_ultima = pos.x;
+        posY_ultima = pos.y;
     }
+}
 
+export function actualizaMovimientoRelativo(mensaje) {
+    // aqui se recibe G91 o G90 o null
+    const comando = parsearMovimientoRelativo(mensaje);
+    if (comando === "G91") {
+        movimientoRelativo = true;
+    } else if (comando === "G90") {
+        movimientoRelativo = false;
+    }
+}
+
+export function dibujarTarget(mensaje) {
+    const posTarget = parsearMovimientoEnEjecucion(mensaje);
+    if (posTarget) {
+        let x, y;
+        if (movimientoRelativo) {
+            x = posX_ultima + posTarget.x;
+            y = posY_ultima + posTarget.y;
+        } else {
+            x = posTarget.x;
+            y = posTarget.y;
+        }
+        visorCabezal.dibujarCabezal({ x: x, y: y }, "green");
+    }
+}
+
+export function actualizarPosicionBoli(mensaje) {
+    const comandoBoli = parsearPosicionBoli(mensaje);
+    console.log("El mensaje en actualizarPosicionBoli es: " + mensaje);
+    console.log("El mensaje parseado en actualizarPosicionBoli es: " + comandoBoli);
+    if (comandoBoli === "M1"){
+        boliPintando = false;
+    } else if (comandoBoli === "M2"){
+        boliPintando = true;
+    }
+    console.log("Estado boli: " + (boliPintando ? "pintando" : "no pintando"));
 }

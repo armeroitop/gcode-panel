@@ -1,8 +1,8 @@
 import { WSClient } from "./wsClient.js";
 import { GcodeService } from "./gcodeService.js";
 import { printPosicion } from "./actulizadorPosicion.js";
-import { mostrarEnRecuadroMensajes} from "./panelCentral.js";
-import { dibujarCabezal, dibujarTrazado } from "./canvasGcode.js";
+import { mostrarEnRecuadroMensajes } from "./panelCentral.js";
+import { dibujarCabezal, dibujarTrazado, actualizarPosicionTarget, actualizarPosicionBoli } from "./canvasGcode.js";
 
 const wsClient = new WSClient(`ws://${window.location.hostname}:8080`);
 const gcodeService = new GcodeService(wsClient);
@@ -53,6 +53,16 @@ function manejarMensajes(message) {
         dibujarTrazado(message);
     }
 
+    if (esComandoEjecucion(message)) {
+        // Aquí puedes manejar los mensajes de ejecución de comandos si es necesario
+        actualizarPosicionTarget(message);
+        console.log("Comando en ejecución: " + message);
+    }
+
+    if (esComandoInterpretado(message)) {
+        actualizarPosicionBoli(message);
+    }
+
     // Puedes añadir más condiciones y funciones aquí:
     if (esMensajeError(message)) {
         mostrarError(message);
@@ -70,6 +80,14 @@ function manejarMensajes(message) {
 
 function esMensajePosicion(message) {
     return message.startsWith("Posicion actual:");
+}
+
+function esComandoEjecucion(mensaje) {
+    return mensaje.startsWith("[Executor] Ejecutando:");
+}
+
+function esComandoInterpretado(mensaje) {
+    return mensaje.startsWith("[Executor] Linea interpretada:");
 }
 
 function esMensajeError(message) {
