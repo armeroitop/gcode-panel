@@ -2,7 +2,7 @@ import { WSClient } from "./wsClient.js";
 import { GcodeService } from "./gcodeService.js";
 import { printPosicion } from "./actulizadorPosicion.js";
 import { mostrarEnRecuadroMensajes } from "./panelCentral.js";
-import { dibujarCabezal, dibujarTrazado, actualizarPosicionTarget, actualizarPosicionBoli } from "./canvasGcode.js";
+import * as canvasGcode from "./canvasGcode.js";
 
 const wsClient = new WSClient(`ws://${window.location.hostname}:8080`);
 const gcodeService = new GcodeService(wsClient);
@@ -49,34 +49,36 @@ function manejarMensajes(message) {
 
     if (esMensajePosicion(message)) {
         printPosicion(message);
-        dibujarCabezal(message);
-        dibujarTrazado(message);
+        canvasGcode.dibujarCabezal(message);
+        canvasGcode.dibujarTrazado(message);
     }
 
+    // Mensajes de ejecución de comandos antes de comenzar a ejecutarlos
     if (esComandoEjecucion(message)) {
-        // Aquí puedes manejar los mensajes de ejecución de comandos si es necesario
-        actualizarPosicionTarget(message);
+        canvasGcode.actualizarPosicionTarget(message);
         console.log("Comando en ejecución: " + message);
     }
 
+    // Mensajes de ejecución de comandos despues de ejecutarlos
     if (esComandoInterpretado(message)) {
-        actualizarPosicionBoli(message);
+        canvasGcode.actualizarPosicionBoli(message);
+    }
+    
+    // Mensajes de parada
+    if (esMensajeParada(message)){
+        console.log("Mensaje de parada recibido: " + message);
+        canvasGcode.alertaMargenFinalDeCarrera(message);
     }
 
     // Puedes añadir más condiciones y funciones aquí:
     if (esMensajeError(message)) {
-        mostrarError(message);
+        canvasGcode.mostrarError(message);
     }
 
     // ...otros tipos de mensajes
 }
 
-/*function mostrarEnRecuadroMensajes(message) {
-     // Aqui hay que pasar los mensajes recibidos el panel central, en el recuadro de mensajes negro
-    const mensajes = document.getElementById("recuadroMensajes");
-    mensajes.innerHTML += `<p>${message}</p>`;
-    mensajes.scrollTop = mensajes.scrollHeight; // Desplazar hacia abajo para mostrar el último
-}*/
+
 
 function esMensajePosicion(message) {
     return message.startsWith("Posicion actual:");
@@ -92,6 +94,10 @@ function esComandoInterpretado(mensaje) {
 
 function esMensajeError(message) {
     return message.startsWith("ERROR:");
+}
+
+function esMensajeParada(mensaje){
+    return mensaje.startsWith("[Parada]");
 }
 
 function mostrarError(message) {

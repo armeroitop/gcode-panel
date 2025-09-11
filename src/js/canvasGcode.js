@@ -1,10 +1,5 @@
+import * as parseadorMensajes from "../utils/parseadorMensajes.js";
 
-import {
-    parsearPosicion,
-    parsearMovimientoRelativo,
-    parsearMovimientoEnEjecucion,
-    parsearPosicionBoli
-} from "../utils/parseadorMensajes.js";
 class CanvasManager {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -17,6 +12,13 @@ class CanvasManager {
         // Aplicamos transformación para sistema cartesiano
         //this.ctx.translate(0, this.canvas.height);
         //this.ctx.scale(1, -1);
+
+        // Definimos los límites del área de dibujo en coordenadas globales
+        this.xmin = -this.canvas.width  / (2 * this.scale);
+        this.xmax = this.canvas.width   / (2 * this.scale);
+        this.ymin = -this.canvas.height / (2 * this.scale);
+        this.ymax = this.canvas.height  / (2 * this.scale);
+
     }
 
     clear() {
@@ -189,6 +191,8 @@ let visorTrazado;
 let visorCabezal;
 let posX_ultima = 0;
 let posY_ultima = 0;
+let posX_target = 0;
+let posY_target = 0;
 let movimientoRelativo = false;
 let boliPintando = false;
 
@@ -201,14 +205,21 @@ export function init() {
     visorCabezal.init();
 }
 
+/**
+ * Dibuja la posición actual del cabezal o boli en el canvas en color rojo
+ * @param {string} mensaje 
+ */
 export function dibujarCabezal(mensaje) {
-    const pos = parsearPosicion(mensaje);
+    const pos = parseadorMensajes.parsearPosicion(mensaje);
     if (pos) {
         visorCabezal.init();
         visorCabezal.dibujarCabezal(pos);
     }
 }
 
+/**
+ * Actualiza la siguiente posición target del cabezal y la dibuja en verde en el canvas
+ */
 export function actualizarPosicionTarget(mensaje) {
     // Comprobar si el movimiento a sido relativo o absoluto
     actualizaMovimientoRelativo(mensaje);
@@ -216,19 +227,35 @@ export function actualizarPosicionTarget(mensaje) {
     // Dibujar el target de proxima posicion,
     // las coordenadas proximas serán: Si es m.relativo serán las ultimas mas el movimiento
     // y si son absolutas pues las que indica el comando G1 Xtal Ytal
-    dibujarTarget(mensaje);
+    const posTarget = parseadorMensajes.parsearMovimientoEnEjecucion(mensaje);
+    if (posTarget) {
+        if (movimientoRelativo) {
+            posX_target = posX_ultima + posTarget.x;
+            posY_target = posY_ultima + posTarget.y;
+        } else {
+            posX_target = posTarget.x;
+            posY_target = posTarget.y;
+        }
+    }
+    dibujarTarget({ x: posX_target, y: posY_target });
 }
 
-export function dibujarTrazado(mensaje) {    
+/**
+ * Dibuja el trazado en el canvas segun el mensaje recibido. 
+ * En azul los trazados con el boli pintando y en gris cuando 
+ * el boli está arriba
+ * @param {string} mensaje 
+ */
+export function dibujarTrazado(mensaje) {
 
-    const pos = parsearPosicion(mensaje);
+    const pos = parseadorMensajes.parsearPosicion(mensaje);
     if (pos) {
         const trazado = [{ x: posX_ultima, y: posY_ultima }, pos];
 
-        if(boliPintando){
+        if (boliPintando) {
             visorTrazado.trazado.color = "blue";
             visorTrazado.trazado.grosor = 2;
-        }else{
+        } else {
             visorTrazado.trazado.color = "lightgray";
             visorTrazado.trazado.grosor = 1;
         }
@@ -240,9 +267,13 @@ export function dibujarTrazado(mensaje) {
     }
 }
 
+/**
+ * Actualiza el modo de movimiento (relativo o absoluto) segun el mensaje recibido
+ * @param {string} mensaje 
+ */
 export function actualizaMovimientoRelativo(mensaje) {
     // aqui se recibe G91 o G90 o null
-    const comando = parsearMovimientoRelativo(mensaje);
+    const comando = parseadorMensajes.parsearMovimientoRelativo(mensaje);
     if (comando === "G91") {
         movimientoRelativo = true;
     } else if (comando === "G90") {
@@ -250,29 +281,66 @@ export function actualizaMovimientoRelativo(mensaje) {
     }
 }
 
-export function dibujarTarget(mensaje) {
-    const posTarget = parsearMovimientoEnEjecucion(mensaje);
-    if (posTarget) {
-        let x, y;
-        if (movimientoRelativo) {
-            x = posX_ultima + posTarget.x;
-            y = posY_ultima + posTarget.y;
-        } else {
-            x = posTarget.x;
-            y = posTarget.y;
-        }
-        visorCabezal.dibujarCabezal({ x: x, y: y }, "green");
-    }
+/**
+ * Dibuja la posicion target del cabezal en verde
+ * @param {{x:number, y:number}} mensaje 
+ */
+export function dibujarTarget({ x, y }) {
+    visorCabezal.dibujarCabezal({ x: x, y: y }, "green");
 }
 
+/**
+ * Actualiza el estado del boli (pintando o no pintando) segun el mensaje recibido
+ * @param {string} mensaje 
+ */
 export function actualizarPosicionBoli(mensaje) {
-    const comandoBoli = parsearPosicionBoli(mensaje);
+
+    const comandoBoli = parseadorMensajes.parsearPosicionBoli(mensaje);
     console.log("El mensaje en actualizarPosicionBoli es: " + mensaje);
     console.log("El mensaje parseado en actualizarPosicionBoli es: " + comandoBoli);
-    if (comandoBoli === "M1"){
+    if (comandoBoli === "M1") {
         boliPintando = false;
-    } else if (comandoBoli === "M2"){
+    } else if (comandoBoli === "M2") {
         boliPintando = true;
     }
     console.log("Estado boli: " + (boliPintando ? "pintando" : "no pintando"));
+}
+
+/**
+ * Dibuja el borde en color naranja en el que se ha pulsado el final de carrera
+ * @param {string} mensaje recibe un mensaje con una opcion entre Xmin | Xmax | Ymin | Ymax
+ */
+export function alertaMargenFinalDeCarrera(mensaje) {
+    visorTrazado.trazado.color = "orange";
+    visorTrazado.trazado.grosor = 15;
+    const eje = parseadorMensajes.parsearParadaFinalDeCarrera(mensaje);
+
+    console.log("El mensaje en alertaMargenFinalDeCarrera es: " + mensaje);
+
+    // Obtenemos las coordenadas minimas y maximas del canvas
+    let xmin = visorTrazado.canvasManager.xmin;
+    let xmax = visorTrazado.canvasManager.xmax;
+    let ymin = visorTrazado.canvasManager.ymin;
+    let ymax = visorTrazado.canvasManager.ymax;
+
+    // Construimos el segmento de borde
+    let bordeIzquierdo  = [{ x: xmin, y: ymin }, { x: xmin, y: ymax }];
+    let bordeDerecho    = [{ x: xmax, y: ymin }, { x: xmax, y: ymax }];
+    let bordeSuperior   = [{ x: xmin, y: ymax }, { x: xmax, y: ymax }];
+    let bordeInferior   = [{ x: xmin, y: ymin }, { x: xmax, y: ymin }];
+
+
+    if (eje === "Xmin") {
+        visorTrazado.dibujarTrazado(bordeIzquierdo);
+    
+    } else if (eje === "Xmax") {
+        visorTrazado.dibujarTrazado(bordeDerecho);
+
+    } else if (eje === "Ymin") {
+        visorTrazado.dibujarTrazado(bordeInferior);
+
+    }else if (eje === "Ymax") {
+        visorTrazado.dibujarTrazado(bordeSuperior);
+
+    }
 }

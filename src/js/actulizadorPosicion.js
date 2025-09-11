@@ -29,6 +29,7 @@ console.log("Alpine store initialized with posX = 0");
 
 /**
  * Actualiza la posición en el Alpine.store si el mensaje tiene el formato correcto.
+ * @param {string} message
  */
 export function printPosicion(message) {
     // Si el mensaje recivido comienza por "posicion", actualizar la posición en el panel

@@ -1,11 +1,11 @@
 /**
  * Parsea un mensaje de posición tipo "Posicion actual: (x, y)"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {{x: number, y: number} | null}
  */
-export function parsearPosicion(message) {
-    if (message.startsWith("Posicion actual:")) {
-        const partes = message.split(": ");
+export function parsearPosicion(mensaje) {
+    if (mensaje.startsWith("Posicion actual:")) {
+        const partes = mensaje.split(": ");
         if (partes.length === 2) {
             const coordenadas = partes[1].replace(/[()]/g, "").split(", ");
             if (coordenadas.length === 2) {
@@ -18,7 +18,7 @@ export function parsearPosicion(message) {
                 console.error("Formato de coordenadas incorrecto:", partes[1]);
             }
         } else {
-            console.error("Mensaje de posición mal formado:", message);
+            console.error("Mensaje de posición mal formado:", mensaje);
         }
     }
     return null;
@@ -26,24 +26,24 @@ export function parsearPosicion(message) {
 
 /**
  * Parsea un mensaje de error tipo "ERROR: descripción"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearError(message) {
-    if (message.startsWith("ERROR:")) {
-        return message.substring(6).trim();
+export function parsearError(mensaje) {
+    if (mensaje.startsWith("ERROR:")) {
+        return mensaje.substring(6).trim();
     }
     return null;
 }
 
 /**
  * Parsea un mensaje de estado tipo "Estado: valor"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearEstado(message) {
-    if (message.startsWith("Estado:")) {
-        return message.split(":")[1]?.trim() ?? null;
+export function parsearEstado(mensaje) {
+    if (mensaje.startsWith("Estado:")) {
+        return mensaje.split(":")[1]?.trim() ?? null;
     }
     return null;
 }
@@ -51,13 +51,13 @@ export function parsearEstado(message) {
 
 /**
  * Parsea un mensaje de movimiento relativo o absoluto "G91" o "G90"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearMovimientoRelativo(message) {
+export function parsearMovimientoRelativo(mensaje) {
     //TODO: El mensaje que recibe tiene este formato [Executor] Ejecutando: G91
-    if (message.startsWith("[Executor] Ejecutando:")) {
-        const comando = message.split(":")[1]?.trim() ?? null;
+    if (mensaje.startsWith("[Executor] Ejecutando:")) {
+        const comando = mensaje.split(":")[1]?.trim() ?? null;
         if (comando === "G91" || comando === "G90") {
             return comando;
         } else {
@@ -68,12 +68,12 @@ export function parsearMovimientoRelativo(message) {
 
 /**
  * Parsea un mensaje de comando ejecutado tipo "[Executor] Ejecutando: G1 X10 Y10"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearMovimientoEnEjecucion(message) {
-    if (message.startsWith("[Executor] Ejecutando:")) {
-        const comando = message.split(":")[1]?.trim() ?? null;
+export function parsearMovimientoEnEjecucion(mensaje) {
+    if (mensaje.startsWith("[Executor] Ejecutando:")) {
+        const comando = mensaje.split(":")[1]?.trim() ?? null;
         if (comando.startsWith("G1")){
             // TODO: Extraer de X e Y los valores y retornarlos como objeto {x: number, y: number}
             const partes = comando.split(" ");
@@ -101,12 +101,12 @@ export function parsearMovimientoEnEjecucion(message) {
 
 /**
  * Parsea un mensaje de comando ejecutado tipo "[Executor] Linea interpretada: M1"
- * @param {string} message
+ * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearPosicionBoli(message) {
-    if (message.startsWith("[Executor] Linea interpretada:")) {
-        const comando = message.split(":")[1]?.trim() ?? null;
+export function parsearPosicionBoli(mensaje) {
+    if (mensaje.startsWith("[Executor] Linea interpretada:")) {
+        const comando = mensaje.split(":")[1]?.trim() ?? null;
         if (comando.startsWith("M1")){
             // Boli arriba
             return "M1";
@@ -116,5 +116,26 @@ export function parsearPosicionBoli(message) {
         } else {
             return null;
         }
+    }
+}
+
+export function parsearComandoGenerico(mensaje) {
+    if (mensaje.startsWith("[Executor] Ejecutando:")) {
+        return mensaje.split(":")[1]?.trim() ?? null;
+    } else if (mensaje.startsWith("[Executor] Linea interpretada:")) {
+        return mensaje.split(":")[1]?.trim() ?? null;
+    }
+    return null;
+}
+
+/**
+ * Parsea un mensaje de parada por final de carrera
+ *  tipo "[Parada] Final de carrera: Xmin | Xmax | Ymin | Ymax"
+ * @param {string} mensaje
+ * @returns {string|null}
+ */
+export function parsearParadaFinalDeCarrera(mensaje){
+    if (mensaje.startsWith("[Parada] Final de carrera:")) {
+        return mensaje.split(":")[1]?.trim() ?? null;
     }
 }
