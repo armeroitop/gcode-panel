@@ -1,13 +1,30 @@
 import * as parseadorMensajes from "../utils/parseadorMensajes.js";
 
 class CanvasManager {
-    constructor(canvasId) {
+    constructor(canvasId, ancho_mm = 250, alto_mm = 254) {
+        this.ancho_mm = ancho_mm;
+        this.alto_mm = alto_mm;
+
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) {
             throw new Error(`No se encontró el canvas con id: ${canvasId}`);
         }
+
+        this.scale = 2.2; // mm -> px, configurable
+
+        // 🔹 Calculamos tamaño en píxeles a partir de mm
+        this.width_px = this.ancho_mm * this.scale;
+        this.height_px = this.alto_mm * this.scale;
+
+        // 🔹 Ajustamos el tamaño interno de los canvas
+        this.canvas.width = this.width_px;
+        this.canvas.height = this.height_px;
+
+        // 🔹 Ajustamos también el tamaño visible (CSS)
+        this.canvas.style.width = this.width_px + "px";
+        this.canvas.style.height = this.height_px + "px";
+
         this.ctx = this.canvas.getContext("2d");
-        this.scale = 2; // mm -> px, configurable
 
         // Aplicamos transformación para sistema cartesiano
         //this.ctx.translate(0, this.canvas.height);

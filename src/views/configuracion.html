@@ -6,7 +6,7 @@
         <h2 class="accordion-header">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                 aria-expanded="true" aria-controls="collapseOne">
-                Accordion Item #1
+                Parámetros del motor
             </button>
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show">
@@ -43,18 +43,34 @@
         <h2 class="accordion-header">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
-                Accordion Item #2
+                Parámetros del area de trabajo
             </button>
         </h2>
         <div id="collapseTwo" class="accordion-collapse collapse show">
             <div class="accordion-body">
-                <strong>This is the second item’s accordion body.</strong> It is hidden by default, until the collapse
-                plugin adds the appropriate classes that we use to style each element. These classes control the overall
-                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
-                custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go
-                within the <code>.accordion-body</code>, though the transition does limit overflow.
+
+                <div class="row  align-items-center mt-1">
+                    <div class="col-4 text-end ml-3">
+                        <label for="vel_max" class="form-label mb-0">Ancho (mm)</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
+                            aria-label="200000 um/s" value="{{parametros.ancho_mm}}">
+                    </div>
+                </div>
+
+                <div class="row  align-items-center mt-1">
+                    <div class="col-4 text-end ml-3">
+                        <label for="vel_max" class="form-label mb-0">Alto (mm)</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
+                            aria-label="200000 um/s" value="{{parametros.alto_mm}}">
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 
     <div class="accordion-item">
@@ -99,7 +115,7 @@
     }
 
     // Cuando se recarga la vista "/configuracion" tengo que meterle este evento
-    document.addEventListener("/configuracion", ( ) => {
+    document.addEventListener("/configuracion", () => {
         console.log("disparo de evento vista /configuracion");
         modificaBorde();
     });

@@ -18,4 +18,45 @@
     <button onclick="enviarComando('M2')"><i class="bi bi-arrow-down"></i></button>
 </div>
 
-<button onclick="enviarComando('M112')" class="btn btn-primary mt-2" style="width: 190px; height: 60px;">STOP</button>
+<button id="botonStop" class="btn btn-primary mt-2" style="width: 190px; height: 60px;">STOP</button>
+
+
+<script>
+
+    let estaParadoPorEmergencia = false;
+
+    function comportamientoBotonStop() {
+        btn_stop = document.querySelector('#botonStop');
+        actualizarEstadoBotonStop(estaParadoPorEmergencia);
+
+        btn_stop.addEventListener('click', function () {
+            console.log('Botón STOP presionado ' + estaParadoPorEmergencia);
+            estaParadoPorEmergencia = !estaParadoPorEmergencia;
+            actualizarEstadoBotonStop(estaParadoPorEmergencia);
+        });
+
+    }
+
+    function actualizarEstadoBotonStop() {
+        btn_stop = document.querySelector('#botonStop');
+
+        if (!estaParadoPorEmergencia) {
+            btn_stop.classList.remove('btn-danger');
+            btn_stop.classList.add('btn-primary');
+            btn_stop.textContent = 'PARAR';
+        } else {
+            btn_stop.classList.remove('btn-primary');
+            btn_stop.classList.add('btn-danger');
+            btn_stop.textContent = 'REANUDAR';
+        }
+    }
+
+    // Cuando se recarga la vista "/inicio" tengo que meterle este evento
+    document.addEventListener("/", () => {
+        console.log("disparo de evento vista /inicio");
+
+        comportamientoBotonStop();
+    });
+
+
+</script>
