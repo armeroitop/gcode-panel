@@ -18,36 +18,51 @@
     <button onclick="enviarComando('M2')"><i class="bi bi-arrow-down"></i></button>
 </div>
 
-<button id="botonStop" class="btn btn-primary mt-2" style="width: 190px; height: 60px;">STOP</button>
+<button id="setaParadaEmergencia" class="btn btn-danger mt-2" style="width: 190px; height: 60px;">
+    PARADA DE EMERGENCIA
+</button>
 
 
 <script>
 
-    let estaParadoPorEmergencia = false;
+    /** Estado de la máquina (parada de emergencia o no). Esta variable es global y 
+     * se actualiza desde src/js/main.js en la función actualizarSetaParadaEmergencia()
+    */
+    if (typeof window.estaParadoPorEmergencia === 'undefined') {
+        window.estaParadoPorEmergencia = false;
+    }
 
-    function comportamientoBotonStop() {
-        btn_stop = document.querySelector('#botonStop');
-        actualizarEstadoBotonStop(estaParadoPorEmergencia);
+    function comportamientoSetaParada() {
+        seta = document.querySelector('#setaParadaEmergencia');
 
-        btn_stop.addEventListener('click', function () {
+        seta.addEventListener('click', function () {
             console.log('Botón STOP presionado ' + estaParadoPorEmergencia);
-            estaParadoPorEmergencia = !estaParadoPorEmergencia;
-            actualizarEstadoBotonStop(estaParadoPorEmergencia);
+
+            //estaParadoPorEmergencia = !estaParadoPorEmergencia;
+            if (window.estaParadoPorEmergencia) {
+                console.log('La máquina ha reanudado la operación.');
+                enviarComando('M999');
+            } else {
+                console.log('La máquina está ahora en estado de parada de emergencia.');
+                enviarComando('M112');
+            }
         });
 
     }
 
-    function actualizarEstadoBotonStop() {
-        btn_stop = document.querySelector('#botonStop');
+    function actualizaSetaParadaEnRecarga() {
+        console.log("Actualizando seta de parada de emergencia en recarga de vista /inicio");
+        const seta = document.getElementById("setaParadaEmergencia");
 
-        if (!estaParadoPorEmergencia) {
-            btn_stop.classList.remove('btn-danger');
-            btn_stop.classList.add('btn-primary');
-            btn_stop.textContent = 'PARAR';
+        if (window.estaParadoPorEmergencia) {
+
+            seta.classList.remove('btn-danger');
+            seta.classList.add('btn-primary');
+            seta.textContent = 'REANUDAR';
         } else {
-            btn_stop.classList.remove('btn-primary');
-            btn_stop.classList.add('btn-danger');
-            btn_stop.textContent = 'REANUDAR';
+            seta.classList.remove('btn-primary');
+            seta.classList.add('btn-danger');
+            seta.textContent = 'PARADA DE EMERGENCIA';
         }
     }
 
@@ -55,8 +70,12 @@
     document.addEventListener("/", () => {
         console.log("disparo de evento vista /inicio");
 
-        comportamientoBotonStop();
+        
+        comportamientoSetaParada();
+        actualizaSetaParadaEnRecarga();
     });
+
+
 
 
 </script>

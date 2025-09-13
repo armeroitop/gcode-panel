@@ -1,4 +1,4 @@
-var conn = new WebSocket(`ws://${window.location.hostname}:8080`); // Asegúrate de usar la IP de tu Banana Pi
+/*var conn = new WebSocket(`ws://${window.location.hostname}:8080`); // Asegúrate de usar la IP de tu Banana Pi
 
 conn.onopen = function(e) {
     console.log("Conexión WebSocket abierta");
@@ -28,3 +28,5 @@ function mover(x,y){
     conn.send(`comando G91`);
     conn.send(`comando G1 X${x} Y${y}`); // Enviar el comando para mover a una posición específica
 }
+
+*/

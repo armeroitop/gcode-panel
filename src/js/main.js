@@ -68,11 +68,16 @@ function manejarMensajes(message) {
     if (esMensajeParada(message)){
         console.log("Mensaje de parada recibido: " + message);
         canvasGcode.alertaMargenFinalDeCarrera(message);
+        canvasGcode.actualizarSetaParadaEmergencia(message);
     }
 
     // Puedes añadir más condiciones y funciones aquí:
     if (esMensajeError(message)) {
         canvasGcode.mostrarError(message);
+    }
+
+    if(esMensajeInformativo(message)){
+        canvasGcode.recibirMensajeInformativo(message);
     }
 
     // ...otros tipos de mensajes
@@ -102,4 +107,8 @@ function esMensajeParada(mensaje){
 
 function mostrarError(message) {
     alert("Error recibido: " + message);
+}
+
+function esMensajeInformativo(message){
+    return message.startsWith("Informacion General:");
 }

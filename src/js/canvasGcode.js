@@ -1,7 +1,7 @@
 import * as parseadorMensajes from "../utils/parseadorMensajes.js";
 
 class CanvasManager {
-    constructor(canvasId, ancho_mm = 250, alto_mm = 254) {
+    constructor(canvasId, ancho_mm = 240, alto_mm = 260) {
         this.ancho_mm = ancho_mm;
         this.alto_mm = alto_mm;
 
@@ -31,10 +31,10 @@ class CanvasManager {
         //this.ctx.scale(1, -1);
 
         // Definimos los límites del área de dibujo en coordenadas globales
-        this.xmin = -this.canvas.width  / (2 * this.scale);
-        this.xmax = this.canvas.width   / (2 * this.scale);
+        this.xmin = -this.canvas.width / (2 * this.scale);
+        this.xmax = this.canvas.width / (2 * this.scale);
         this.ymin = -this.canvas.height / (2 * this.scale);
-        this.ymax = this.canvas.height  / (2 * this.scale);
+        this.ymax = this.canvas.height / (2 * this.scale);
 
     }
 
@@ -91,6 +91,7 @@ class Ejes {
         this.ctx.moveTo(0, centerY);
         this.ctx.lineTo(width, centerY);
         this.ctx.stroke();
+        this.ctx.fillStyle = "gray";
 
         // Marcas cada 10 unidades
         const step = 10 * this.scale;
@@ -99,12 +100,15 @@ class Ejes {
             this.ctx.moveTo(x, centerY - 5);
             this.ctx.lineTo(x, centerY + 5);
             this.ctx.stroke();
+            //this.ctx.fillText(((x - centerX) / this.scale).toFixed(0), x + 2, centerY - 7);
+            this.ctx.fillText(((x - centerX) / this.scale).toFixed(0), x, centerY - 7);
         }
         for (let x = centerX; x > 0; x -= step) {
             this.ctx.beginPath();
             this.ctx.moveTo(x, centerY - 5);
             this.ctx.lineTo(x, centerY + 5);
             this.ctx.stroke();
+            this.ctx.fillText(((x - centerX) / this.scale).toFixed(0), x, centerY - 7);
         }
 
         // Eje Y
@@ -120,12 +124,14 @@ class Ejes {
             this.ctx.moveTo(centerX - 5, y);
             this.ctx.lineTo(centerX + 5, y);
             this.ctx.stroke();
+            this.ctx.fillText(((y - centerY) / this.scale).toFixed(0), centerX + 8, y + 3);
         }
         for (let y = centerY; y > 0; y -= step) {
             this.ctx.beginPath();
             this.ctx.moveTo(centerX - 5, y);
             this.ctx.lineTo(centerX + 5, y);
             this.ctx.stroke();
+            this.ctx.fillText(((y - centerY) / this.scale).toFixed(0), centerX + 8, y + 3);
         }
     }
 }
@@ -215,8 +221,11 @@ let boliPintando = false;
 
 export function init() {
 
+    // Pregunto a la maquina su información inicial {posicion, estdoParadaEmergencia, etc}
+    enviarComando('M100'); 
+
     visorTrazado = new VisorTrazado("canvasTrazado");
-    visorCabezal = new VisorCabezal("canvasCabezal");
+    visorCabezal = new VisorCabezal("canvasCabezal");    
 
     visorTrazado.init();
     visorCabezal.init();
@@ -253,8 +262,8 @@ export function actualizarPosicionTarget(mensaje) {
             posX_target = posTarget.x;
             posY_target = posTarget.y;
         }
+        dibujarTarget({ x: posX_target, y: posY_target });
     }
-    dibujarTarget({ x: posX_target, y: posY_target });
 }
 
 /**
@@ -341,23 +350,60 @@ export function alertaMargenFinalDeCarrera(mensaje) {
     let ymax = visorTrazado.canvasManager.ymax;
 
     // Construimos el segmento de borde
-    let bordeIzquierdo  = [{ x: xmin, y: ymin }, { x: xmin, y: ymax }];
-    let bordeDerecho    = [{ x: xmax, y: ymin }, { x: xmax, y: ymax }];
-    let bordeSuperior   = [{ x: xmin, y: ymax }, { x: xmax, y: ymax }];
-    let bordeInferior   = [{ x: xmin, y: ymin }, { x: xmax, y: ymin }];
+    let bordeIzquierdo = [{ x: xmin, y: ymin }, { x: xmin, y: ymax }];
+    let bordeDerecho = [{ x: xmax, y: ymin }, { x: xmax, y: ymax }];
+    let bordeSuperior = [{ x: xmin, y: ymax }, { x: xmax, y: ymax }];
+    let bordeInferior = [{ x: xmin, y: ymin }, { x: xmax, y: ymin }];
 
 
     if (eje === "Xmin") {
         visorTrazado.dibujarTrazado(bordeIzquierdo);
-    
+
     } else if (eje === "Xmax") {
         visorTrazado.dibujarTrazado(bordeDerecho);
 
     } else if (eje === "Ymin") {
         visorTrazado.dibujarTrazado(bordeInferior);
 
-    }else if (eje === "Ymax") {
+    } else if (eje === "Ymax") {
         visorTrazado.dibujarTrazado(bordeSuperior);
 
     }
+}
+
+export function actualizarSetaParadaEmergencia(mensaje) {
+    const estado = parseadorMensajes.parsearParadaEmergencia(mensaje);
+
+    window.estaParadoPorEmergencia = (estado === "true");
+    console.log("El mensaje en actualizarSetaParadaEmergencia es: " + mensaje);
+    console.log("Estado de la parada de emergencia: " + estado);
+    
+    // Actualizamos el boton
+    //
+    const seta = document.getElementById("setaParadaEmergencia");
+
+    if (estado === "true") {
+        seta.classList.remove('btn-danger');
+        seta.classList.add('btn-primary');
+        seta.textContent = 'REANUDAR';
+    } else if (estado === "false") {
+        seta.classList.remove('btn-primary');
+        seta.classList.add('btn-danger');
+        seta.textContent = 'PARADA DE EMERGENCIA';
+    }
+}
+
+export function recibirMensajeInformativo(mensaje){
+    const  datos = parseadorMensajes.parsearInformacionGeneral(mensaje);
+    console.log("Mensaje informativo recibido: " + datos);
+
+    visorCabezal.dibujarCabezal(datos.pos_actual, "blue");
+    posX_ultima = datos.pos_actual.x;
+    posY_ultima = datos.pos_actual.y;
+
+    Alpine.store('menu').posX = datos.pos_actual.x;
+    Alpine.store('menu').posY = datos.pos_actual.y;
+
+    window.estaParadoPorEmergencia = datos.parada_emergencia;
+
 }

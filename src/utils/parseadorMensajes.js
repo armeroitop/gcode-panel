@@ -139,3 +139,72 @@ export function parsearParadaFinalDeCarrera(mensaje){
         return mensaje.split(":")[1]?.trim() ?? null;
     }
 }
+
+/**
+ * Parsea un mensaje de parada por emergencia
+ *  tipo "[Parada] Emergencia: true | false "
+ * @param {string} mensaje
+ * @returns {string|null}
+ */
+export function parsearParadaEmergencia(mensaje){
+    if (mensaje.startsWith("[Parada] Emergencia:")) {
+        return mensaje.split(":")[1]?.trim() ?? null;
+    }
+}
+
+/**
+ * Parsea un mensaje con informacion de posicion, de parada, etc
+ * @param {*} mensaje 
+ * @returns devuelve un objeto con esta forma {  pos_actual: { x: 0, y: 0 },
+ *                                               vel_unit_max: 0,
+ *                                               vel_ang_max: 0.0001,
+ *                                               parada_emergencia: false,
+ *                                               u_final_carrera: ""}
+ * 
+ */
+export function parsearInformacionGeneral(mensaje) {
+
+    if (!mensaje.startsWith("Informacion General:")) return null;
+
+    // Quitar la parte inicial
+    let info = mensaje.replace("Informacion General:", "").trim();
+
+    // Separar por ';' cada campo
+    let campos = info.split(";").map(c => c.trim()).filter(c => c.length > 0);
+
+    // Crear objeto vacío
+    let datos = {};
+
+    campos.forEach(campo => {
+        // Separar por ':' la clave y el valor
+        let [clave, valor] = campo.split(":").map(s => s.trim());
+
+        if (clave && valor !== undefined) {
+            // Si es la posición, convertir a objeto {x, y}
+            if (clave === "pos_actual") {
+                // Quitar paréntesis y separar por coma
+                let match = valor.match(/\(([^,]+),\s*([^)]+)\)/);
+                if (match) {
+                    datos[clave] = {
+                        x: parseFloat(match[1]),
+                        y: parseFloat(match[2])
+                    };
+                    return; // ya asignado, saltar al siguiente campo
+                }
+            }
+
+            // Convertir valores booleanos o numéricos
+            if (!isNaN(valor)) {
+                valor = parseFloat(valor);
+            } else if (valor === "true") {
+                valor = true;
+            } else if (valor === "false") {
+                valor = false;
+            }
+
+            datos[clave] = valor;
+        }
+    });
+
+    return datos;
+}
