@@ -60,10 +60,10 @@ function manejarMensajes(message) {
     }
 
     // Mensajes de ejecución de comandos despues de ejecutarlos
-    if (esComandoInterpretado(message)) {
+    if (esComandoInterpretado(message) || esComandoBoli(message)) {
         canvasGcode.actualizarPosicionBoli(message);
     }
-    
+   
     // Mensajes de parada
     if (esMensajeParada(message)){
         console.log("Mensaje de parada recibido: " + message);
@@ -96,6 +96,11 @@ function esComandoEjecucion(mensaje) {
 function esComandoInterpretado(mensaje) {
     return mensaje.startsWith("[Executor] Linea interpretada:");
 }
+
+function esComandoBoli(mensaje) {
+    return mensaje.startsWith("[ServoBoli] metodo:");
+}
+
 
 function esMensajeError(message) {
     return message.startsWith("ERROR:");

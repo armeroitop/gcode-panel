@@ -74,7 +74,9 @@ export function parsearMovimientoRelativo(mensaje) {
 export function parsearMovimientoEnEjecucion(mensaje) {
     if (mensaje.startsWith("[Executor] Ejecutando:")) {
         const comando = mensaje.split(":")[1]?.trim() ?? null;
-        if (comando.startsWith("G1")){
+        if (comando.startsWith("G1")
+            || comando.startsWith("G01")
+            || comando.startsWith("G00")) {
             // TODO: Extraer de X e Y los valores y retornarlos como objeto {x: number, y: number}
             const partes = comando.split(" ");
             let x = null;
@@ -105,12 +107,15 @@ export function parsearMovimientoEnEjecucion(mensaje) {
  * @returns {string|null}
  */
 export function parsearPosicionBoli(mensaje) {
-    if (mensaje.startsWith("[Executor] Linea interpretada:")) {
+    if (mensaje.startsWith("[Executor] Linea interpretada:")
+        || mensaje.startsWith("[ServoBoli] metodo:")) {
+    
         const comando = mensaje.split(":")[1]?.trim() ?? null;
-        if (comando.startsWith("M1")){
+
+        if (comando.startsWith("M1")) {
             // Boli arriba
             return "M1";
-        } else if (comando.startsWith("M2")){
+        } else if (comando.startsWith("M2")) {
             // Boli abajo
             return "M2";
         } else {
@@ -134,7 +139,7 @@ export function parsearComandoGenerico(mensaje) {
  * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearParadaFinalDeCarrera(mensaje){
+export function parsearParadaFinalDeCarrera(mensaje) {
     if (mensaje.startsWith("[Parada] Final de carrera:")) {
         return mensaje.split(":")[1]?.trim() ?? null;
     }
@@ -146,7 +151,7 @@ export function parsearParadaFinalDeCarrera(mensaje){
  * @param {string} mensaje
  * @returns {string|null}
  */
-export function parsearParadaEmergencia(mensaje){
+export function parsearParadaEmergencia(mensaje) {
     if (mensaje.startsWith("[Parada] Emergencia:")) {
         return mensaje.split(":")[1]?.trim() ?? null;
     }
