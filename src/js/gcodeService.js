@@ -9,8 +9,9 @@ export class GcodeService {
     }
 
     mover(x, y){
-        this.wsClient.send(`comando G91`);
+        this.wsClient.send(`comando G91`); // lo ponemos en coordenadas relativas momentaneamente
         this.wsClient.send(`comando G1 X${x} Y${y}`); // Enviar el comando para mover a una posición específica
+        this.wsClient.send(`comando G90`); // lo reponemos en coordenadas absolutas
     }
 
     enviarComando(comando) {
