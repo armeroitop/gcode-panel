@@ -29,6 +29,7 @@ $router->add('GET', '/api/usuarios/show', [UsuariosController::class, 'show']);
 
 // Rutas parámetros
 $router->add('GET', '/api/parametros/show', [ParametrosController::class, 'show']);
+$router->add('POST', '/api/parametros/update', [ParametrosController::class, 'update']);
 
 
 // Este debe ser el último paso, para que todas las rutas se hayan añadido

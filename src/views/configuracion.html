@@ -1,97 +1,107 @@
 {{> barraNavegacion}}
 
-<div class="accordion" id="accordionExample">
+<form id="formParametros">
 
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                aria-expanded="true" aria-controls="collapseOne">
-                Parámetros del motor
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show">
-            <div class="accordion-body">
+    <div class="accordion" id="accordionExample">
 
-                <div class="row  align-items-center mt-1">
-                    <div class="col-4 text-end ml-3">
-                        <label for="vel_max" class="form-label mb-0">Velocidad máxima</label>
+        <button id="btnGuardar" type="submit" class="btn btn-outline-primary d-none">
+            Guardar
+        </button>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    Parámetros del motor
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+
+                    <div class="row  align-items-center mt-1">
+                        <div class="col-4 text-end ml-3">
+                            <label for="velocidadMax" class="form-label mb-0">Velocidad máxima</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" name="velocidadMax" class="form-control" placeholder="200000 um/s"
+                                aria-label="200000 um/s" value="{{parametros.velocidadMax}}" min="100" max="350"
+                                required>
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
-                            aria-label="200000 um/s" value="{{parametros.velocidadMax}}">
+
+                    <div class="row  align-items-center mt-1">
+                        <div class="col-4 text-end ml-3">
+                            <label for="aceleracion" class="form-label mb-0">Aceleracion</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" name="aceleracion" class="form-control" placeholder="Last name"
+                                aria-label="Last name" value="{{parametros.aceleracion}}">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row  align-items-center mt-1">
-                    <div class="col-4 text-end ml-3">
-                        <label for="aceleracion" class="form-label mb-0">Aceleracion</label>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" name="aceleracion" class="form-control" placeholder="Last name"
-                            aria-label="Last name" value="{{parametros.aceleracion}}">
-                    </div>
-                </div>
 
 
 
-            </div>
-        </div>
-    </div>
-
-
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
-                Parámetros del area de trabajo
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse show">
-            <div class="accordion-body">
-
-                <div class="row  align-items-center mt-1">
-                    <div class="col-4 text-end ml-3">
-                        <label for="vel_max" class="form-label mb-0">Ancho (mm)</label>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
-                            aria-label="200000 um/s" value="{{parametros.ancho_mm}}">
-                    </div>
-                </div>
-
-                <div class="row  align-items-center mt-1">
-                    <div class="col-4 text-end ml-3">
-                        <label for="vel_max" class="form-label mb-0">Alto (mm)</label>
-                    </div>
-                    <div class="col-4">
-                        <input type="text" name="vel_max" class="form-control" placeholder="200000 um/s"
-                            aria-label="200000 um/s" value="{{parametros.alto_mm}}">
-                    </div>
                 </div>
             </div>
         </div>
 
-    </div>
 
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                aria-expanded="false" aria-controls="collapseThree">
-                Accordion Item #3
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse show">
-            <div class="accordion-body">
-                <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse
-                plugin adds the appropriate classes that we use to style each element. These classes control the overall
-                appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
-                custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go
-                within the <code>.accordion-body</code>, though the transition does limit overflow.
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    Parámetros del area de trabajo
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+
+                    <div class="row  align-items-center mt-1">
+                        <div class="col-4 text-end ml-3">
+                            <label for="ancho_mm" class="form-label mb-0">Ancho (mm)</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" name="ancho_mm" class="form-control" placeholder="200000 um/s"
+                                aria-label="200000 um/s" value="{{parametros.ancho_mm}}" min="200" max="350" required>
+                        </div>
+                    </div>
+
+                    <div class="row  align-items-center mt-1">
+                        <div class="col-4 text-end ml-3">
+                            <label for="alto_mm" class="form-label mb-0">Alto (mm)</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" name="alto_mm" class="form-control" placeholder="200000 um/s"
+                                aria-label="200000 um/s" value="{{parametros.alto_mm}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+                    aria-expanded="false" aria-controls="collapseThree">
+                    Accordion Item #3
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the
+                    collapse
+                    plugin adds the appropriate classes that we use to style each element. These classes control the
+                    overall
+                    appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with
+                    custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can
+                    go
+                    within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+</form>
 
 <script>
 
@@ -107,11 +117,64 @@
                 if (input.value !== input.dataset.original) {
                     input.style.border = "2px solid orange";
                     console.log("cambio");
+                    document.querySelector("#btnGuardar").classList.remove("d-none");
                 } else {
                     input.style.border = "";
+                    document.querySelector("#btnGuardar").classList.add("d-none");
                 }
             });
         });
+    }
+    // Seleccionamos el formulario
+    const form = document.getElementById('formParametros');
+
+    // Escuchamos el submit, solo llamamos a nuestra función encapsulada
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Evita recarga de página
+        if (form.reportValidity()) {
+            update_params(); // Solo se llama si la validación HTML5 pasa
+        }
+    });
+
+    async function update_params() {
+        // Recolectar todos los campos del acordeón
+        const data = {};
+        document.querySelectorAll('#formParametros input').forEach(input => {
+             if (!input.name) return;
+
+            // Si el input es de tipo number, convertir a entero
+            if (input.type === "number") {
+                const parsed = parseInt(input.value, 10);
+                if (!isNaN(parsed)) {         // solo si se pudo parsear
+                    data[input.name] = parsed;
+                }
+            } else {
+                // Mantener como string (ej: puertoSerie)
+                data[input.name] = input.value;
+            }
+
+        });
+
+        console.log("Datos a enviar:", data);
+
+        try {
+            const response = await fetch('/api/parametros/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('✅ Parámetros actualizados correctamente');
+                console.log(result);
+            } else {
+                alert('⚠️ Error: ' + (result.error || 'Error al guardar'));
+            }
+        } catch (error) {
+            alert('🚫 Error de conexión con el servidor');
+            console.error(error);
+        }
     }
 
     // Cuando se recarga la vista "/configuracion" tengo que meterle este evento
