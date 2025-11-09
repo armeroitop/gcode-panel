@@ -108,19 +108,31 @@
     // Guardamos los valores iniciales
     function modificaBorde() {
         const inputs = document.querySelectorAll("input");
+        const btnGuardar = document.querySelector("#btnGuardar");
         console.log(inputs);
+        
         inputs.forEach(input => {
             input.dataset.original = input.value;
+            input.dataset.changed = "false";
             console.log("hola");
 
             input.addEventListener("input", () => {
                 if (input.value !== input.dataset.original) {
                     input.style.border = "2px solid orange";
+                    input.dataset.changed = "true";
                     console.log("cambio");
-                    document.querySelector("#btnGuardar").classList.remove("d-none");
                 } else {
                     input.style.border = "";
-                    document.querySelector("#btnGuardar").classList.add("d-none");
+                    input.dataset.changed = "false";
+                }
+
+                // Recorremos todos los inputs para ver si hay al menos uno cambiado
+                const algunCambio = Array.from(inputs).some(i => i.dataset.changed === "true");
+
+                if (algunCambio) {
+                    btnGuardar.classList.remove("d-none");
+                } else {
+                    btnGuardar.classList.add("d-none");
                 }
             });
         });

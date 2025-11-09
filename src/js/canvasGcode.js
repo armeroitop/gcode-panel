@@ -407,3 +407,17 @@ export function recibirMensajeInformativo(mensaje){
     window.estaParadoPorEmergencia = datos.parada_emergencia;
 
 }
+
+export function previsualizarGcode(){
+    console.log("Previsualizando Gcode...");
+    const archivoSeleccionado = document.querySelector('#listaArchivos a.active');
+    if (!archivoSeleccionado) {
+        alert("Necesitas seleccionar un archivo G-code primero.");
+        return;
+    }
+
+    console.log("Previsualizando archivo:", archivoSeleccionado.textContent);
+}
+
+// Exponer la función para que pueda ser llamada desde scripts en el HTML 
+window.previsualizarGcode = previsualizarGcode
